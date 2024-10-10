@@ -1,0 +1,45 @@
+{
+  "name": "hotel-assist-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "start:bot": "ts-node bot/bot.ts",
+    "start:backend": "ts-node backend/server.ts",
+    "start": "npm run start:bot & npm run start:backend",
+    "lint": "eslint '*/**/*.{ts,js}' --quiet",
+    "format": "prettier --write '*/**/*.{ts,js,json}'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "prettier --write && eslint --fix && git add -A ."
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.7.5",
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "express": "^4.21.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@faker-js/faker": "^9.0.3",
+    "@types/express": "^5.0.0",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.11.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "typescript-eslint": "^8.8.1"
+  }
+}
