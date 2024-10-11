@@ -1,18 +1,30 @@
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../db"; // Import the sequelize instance
+import { sequelize } from "../db";
+import { TServiceStatus } from "../common/types";
 
-// Define the Room model
 export class Room extends Model {
   public id!: string;
   public type!: string;
-  public bookedDates!: string[];
   public price!: number;
   public currency!: string;
   public imageUrl!: string;
   public roomNumber!: number;
+  public minGuests!: number;
+  public maxGuests!: number;
+  public bookedBy!: {
+    userId: string;
+    phone: string;
+    firstName: string;
+    lastName: string;
+    startDate: string;
+    endDate: string;
+  }[];
+  public extraServices!: {
+    serviceName: string;
+    status: TServiceStatus;
+  }[];
 }
 
-// Initialize the Room model with Sequelize
 Room.init(
   {
     id: {
@@ -23,11 +35,6 @@ Room.init(
     type: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    bookedDates: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: false,
-      defaultValue: [],
     },
     price: {
       type: DataTypes.INTEGER,
@@ -45,9 +52,27 @@ Room.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    minGuests: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+    },
+    maxGuests: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    bookedBy: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
+    extraServices: {
+      type: DataTypes.JSON,
+      allowNull: true,
+      defaultValue: [],
+    },
   },
   {
-    sequelize, // Pass the sequelize instance
+    sequelize,
     tableName: "rooms",
   },
 );
