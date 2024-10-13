@@ -13,8 +13,18 @@ export type TSessionData = {
   lastName: string;
   phone: string;
   roomType: string;
+  availableRoomId: string;
 };
 
-export type TUserSessions = {
+export type TUserSession = {
   [chatId: number]: TSessionData;
+};
+
+export type TUserBookingData = {
+  userId: string;
+  phone: string;
+  firstName: string;
+  lastName: string;
+  startDate: string;
+  endDate: string;
 };

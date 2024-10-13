@@ -6,10 +6,10 @@ export const sendOrUpdateRoomTypeDetails = (
   bot: TelegramBot,
   chatId: number,
   messageId: number | null,
-  roomType: TRoomType,
   currentRoomTypeIndex: number,
   rooms: TRoomType[],
 ) => {
+  const roomType = rooms[currentRoomTypeIndex];
   const inlineKeyboard = [
     ...(currentRoomTypeIndex < rooms.length - 1
       ? [[{ text: "Next", callback_data: "next_room_type" }]]

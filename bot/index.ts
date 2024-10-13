@@ -4,12 +4,12 @@ import { BOT_START_MESSAGE, TOKEN } from "./common/constants";
 import { handleTextMessage, handleCallbackQuery } from "./handlers";
 import i18next from "i18next";
 import { initI18n } from "./i18n";
-import { TRoomType, TUserSessions } from "./common/types";
+import { TRoomType, TUserSession } from "./common/types";
 
 const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
 
 let currentRoomTypeIndex = 0;
-const userSessions: TUserSessions = {};
+const userSessions: TUserSession = {};
 
 initI18n();
 
@@ -44,17 +44,9 @@ bot.onText(BOT_START_MESSAGE, (msg) => {
 
   bot.sendMessage(chatId, i18next.t("startMessage"), options);
 });
-
-bot.on("message", (msg) =>
-  handleTextMessage(
-    bot,
-    msg.chat.id,
-    msg,
-    userSessions,
-    rooms,
-    currentRoomTypeIndex,
-  ),
-);
+bot.on("message", (msg) => {
+  return handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+});
 
 bot.on("callback_query", (callbackQuery) =>
   handleCallbackQuery(
@@ -63,5 +55,6 @@ bot.on("callback_query", (callbackQuery) =>
     rooms,
     currentRoomTypeIndex,
     (index) => (currentRoomTypeIndex = index),
+    userSessions,
   ),
 );

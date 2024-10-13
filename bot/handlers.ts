@@ -4,21 +4,22 @@ import { sendOrUpdateRoomTypeDetails } from "./botActions";
 import {
   bookRoom,
   checkRoomAvailability,
+  gatherBookingData,
   getDifferenceInDays,
   isCheckoutDateValid,
   isValidDate,
 } from "./common/utils";
 import { isValidName, isValidPhoneNumber } from "./common/validators";
-import { TRoomType, TUserSessions } from "./common/types";
+import { TRoomType, TSessionData, TUserSession } from "./common/types";
 
 export const handleTextMessage = (
   bot: TelegramBot,
-  chatId: number,
   msg: TelegramBot.Message,
-  userSessions: TUserSessions,
+  userSessions: TUserSession,
   rooms: TRoomType[],
   currentRoomTypeIndex: number,
 ) => {
+  const chatId = msg.chat.id;
   const session = userSessions[chatId];
 
   if (!session?.bookingStage) {
@@ -27,12 +28,12 @@ export const handleTextMessage = (
         bot,
         chatId,
         null,
-        rooms[currentRoomTypeIndex],
         currentRoomTypeIndex,
         rooms,
       );
     }
   } else if (session.bookingStage === "awaiting_checkin_date") {
+    userSessions[chatId].roomType = rooms[currentRoomTypeIndex].type;
     if (!isValidDate(msg.text!)) {
       bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
     } else {
@@ -42,15 +43,62 @@ export const handleTextMessage = (
     }
   } else if (session.bookingStage === "awaiting_checkout_date") {
     if (!isValidDate(msg.text!)) {
-      bot.sendMessage(chatId, i18next.t("invalidCheckoutDate"));
+      bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
     } else if (
-      !isCheckoutDateValid(userSessions[chatId].checkInDate!, msg.text!)
+      !isCheckoutDateValid(userSessions[chatId].checkInDate, msg.text!)
     ) {
       bot.sendMessage(chatId, i18next.t("checkoutEarlierThanCheckin"));
     } else {
       userSessions[chatId].checkOutDate = msg.text!;
-      userSessions[chatId].bookingStage = "awaiting_first_name";
-      bot.sendMessage(chatId, i18next.t("enterFirstName"));
+      const roomType = rooms[currentRoomTypeIndex].type;
+
+      // Perform the room availability check once after both dates are entered
+      checkRoomAvailability(
+        roomType,
+        userSessions[chatId].checkInDate,
+        userSessions[chatId].checkOutDate,
+      )
+        .then((response) => {
+          if (typeof response === "string") {
+            // If room is unavailable, send options to the user
+            const nextAvailableDate = response.match(/\d{2}\/\d{2}\/\d{4}/);
+            const nextAvailableDateMatch = nextAvailableDate
+              ? nextAvailableDate[0]
+              : null;
+            if (nextAvailableDateMatch) {
+              bot.sendMessage(chatId, response, {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: i18next.t("continueReservation", {
+                          nextAvailableDate,
+                        }),
+                        callback_data: `continue_reservation_${nextAvailableDate}`,
+                      },
+                      {
+                        text: i18next.t("seeOtherRooms"),
+                        callback_data: "see_other_rooms",
+                      },
+                    ],
+                  ],
+                },
+              });
+            }
+          } else if (response) {
+            // If room is available, proceed with gathering user details
+            userSessions[chatId].availableRoomId = response.id; // Store available room id in the session
+            userSessions[chatId].bookingStage = "awaiting_first_name";
+            bot.sendMessage(chatId, i18next.t("enterFirstName"));
+          } else {
+            bot.sendMessage(chatId, i18next.t("noRoomsAvailable"));
+            delete userSessions[chatId];
+          }
+        })
+        .catch((error) => {
+          bot.sendMessage(chatId, i18next.t("errorOccurred"));
+          console.error(error);
+        });
     }
   } else if (session.bookingStage === "awaiting_first_name") {
     if (!isValidName(msg.text!)) {
@@ -73,51 +121,43 @@ export const handleTextMessage = (
       bot.sendMessage(chatId, i18next.t("invalidPhoneNumber"));
     } else {
       userSessions[chatId].phone = msg.text!;
-      const roomType = rooms[currentRoomTypeIndex].type;
 
-      checkRoomAvailability(
-        roomType,
-        userSessions[chatId].checkInDate!,
-        userSessions[chatId].checkOutDate!,
-      ).then((availableRoom) => {
-        if (availableRoom) {
-          const bookingData = {
-            userId: chatId.toString(),
-            phone: userSessions[chatId].phone,
-            firstName: userSessions[chatId].firstName,
-            lastName: userSessions[chatId].lastName,
-            startDate: userSessions[chatId].checkInDate!,
-            endDate: userSessions[chatId].checkOutDate!,
-          };
+      // Retrieve the available room that was checked earlier
+      const availableRoomId = userSessions[chatId].availableRoomId;
+      if (availableRoomId) {
+        const bookingData = gatherBookingData(chatId, userSessions);
 
-          bookRoom(availableRoom, bookingData).then(() => {
+        bookRoom(availableRoomId, bookingData)
+          .then(() => {
             const totalDays = getDifferenceInDays(
               userSessions[chatId].checkInDate,
               userSessions[chatId].checkOutDate,
             );
-            const totalNights = totalDays === 1 ? totalDays : totalDays - 1;
             const totalPrice = totalDays * rooms[currentRoomTypeIndex].price;
 
             bot.sendMessage(
               chatId,
               i18next.t("bookingConfirmation", {
-                roomType,
+                roomType: userSessions[chatId].roomType,
                 checkIn: userSessions[chatId].checkInDate,
                 checkOut: userSessions[chatId].checkOutDate,
-                totalNights,
+                totalDays,
                 totalPrice,
                 firstName: userSessions[chatId].firstName,
                 lastName: userSessions[chatId].lastName,
                 phone: userSessions[chatId].phone,
               }),
             );
-            delete userSessions[chatId];
+            delete userSessions[chatId]; // Clear session after booking is complete
+          })
+          .catch((error) => {
+            bot.sendMessage(chatId, i18next.t("errorOccurred"));
+            console.error(error);
           });
-        } else {
-          bot.sendMessage(chatId, i18next.t("noRoomsAvailable"));
-          delete userSessions[chatId];
-        }
-      });
+      } else {
+        bot.sendMessage(chatId, i18next.t("errorOccurred"));
+        console.error("No available room found in session");
+      }
     }
   }
 };
@@ -128,9 +168,11 @@ export const handleCallbackQuery = (
   rooms: TRoomType[],
   currentRoomTypeIndex: number,
   setCurrentRoomTypeIndex: (index: number) => void,
+  userSessions: TUserSession,
 ) => {
   const message = callbackQuery.message!;
   const data = callbackQuery.data!;
+  const chatId = message.chat.id;
 
   let newIndex = currentRoomTypeIndex;
 
@@ -138,6 +180,19 @@ export const handleCallbackQuery = (
     newIndex = currentRoomTypeIndex + 1;
   } else if (data === "previous_room_type" && currentRoomTypeIndex > 0) {
     newIndex = currentRoomTypeIndex - 1;
+  } else if (data.startsWith("book_room_type_")) {
+    // Start the booking process
+    userSessions[chatId] = {
+      bookingStage: "awaiting_checkin_date",
+    } as TSessionData;
+    bot.sendMessage(chatId, i18next.t("enterCheckInDate"));
+  } else if (data.startsWith("continue_reservation_")) {
+    const nextAvailableDate = data.split("_")[2];
+    userSessions[chatId].checkInDate = nextAvailableDate;
+    userSessions[chatId].bookingStage = "awaiting_checkout_date";
+    bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
+  } else if (data === "see_other_rooms") {
+    sendOrUpdateRoomTypeDetails(bot, chatId, null, currentRoomTypeIndex, rooms);
   }
 
   if (newIndex !== currentRoomTypeIndex) {
@@ -147,13 +202,9 @@ export const handleCallbackQuery = (
       bot,
       message.chat.id,
       message.message_id,
-      rooms[newIndex], // pass the updated index
-      newIndex, // updated room type index
+      newIndex,
       rooms,
     );
-  } else {
-    // Optionally send a message indicating that the user has reached the start or end
-    bot.answerCallbackQuery(callbackQuery.id, { text: "No more rooms." });
   }
 
   bot.answerCallbackQuery(callbackQuery.id);
