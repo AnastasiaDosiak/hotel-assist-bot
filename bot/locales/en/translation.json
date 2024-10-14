@@ -19,11 +19,15 @@
   "invalidFirstName": "Invalid first name. Please, try again.",
   "enterLastName": "Please enter your last name.",
   "invalidLastName": "Invalid last name. Please, try again.",
-  "enterPhoneNumber": "Please enter your phone number.",
   "invalidPhoneNumber": "Invalid phone number. Please, try again.",
-  "bookingConfirmation": "Booking confirmed! Room: {{roomType}}. Check-in: {{checkIn}}, Check-out: {{checkOut}}, Total nights: {{totalDays}}. Total price: {{totalPrice}} UAH. Name: {{firstName}} {{lastName}}, Phone: {{phone}}.",
-  "noRoomsAvailable": "Something went wrong. Please, reach our manager +380673146512 with your problem.",
-  "enterCheckinDate": "Write a check-in date. The format should be DD/MM/YYYY",
+  "bookingConfirmation": "Booking confirmed! Room: {{roomType}}. Check-in: {{checkIn}}, Check-out: {{checkOut}}, Total nights: {{totalDays}}. Total price: {{totalPrice}} UAH. Name: {{firstName}} {{lastName}}, Phone: {{phone}}. You can pay at the reception in the day of your arrival",
+  "noRoomsAvailable": "Something went wrong and this room type was not found. Please, reach our manager +380673146512 to fix your problem.",
+  "enterCheckInDate": "Write a check-in date. The format should be DD/MM/YYYY",
   "continueReservation": "Continue reservation from {{nextAvailableDate}}",
-  "seeOtherRooms": "See other rooms"
+  "seeOtherRooms": "See other rooms",
+  "sharePhoneNumber": "We need your phone number to complete the booking. Please share it via the button below.",
+  "shareContact": "Share your contact to continue reservation.",
+  "noContactInfoReceived": "No contact info received. Please, share your contact to continue reservation.",
+  "bookingError": "Seems like some error happened during booking. Please, try again to book the room.",
+  "errorOccurred": "We are sorry to tell that some error happened during booking. Please, try again or reach to our manager directly +380673146512"
 }

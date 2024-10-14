@@ -34,7 +34,7 @@ app.get("/rooms", async (req: Request, res: Response) => {
 });
 
 sequelize.sync({ force: true }).then(async () => {
-  await generateFakeRooms(6);
+  await generateFakeRooms(50);
 
   app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);

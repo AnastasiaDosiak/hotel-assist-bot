@@ -58,3 +58,30 @@ bot.on("callback_query", (callbackQuery) =>
     userSessions,
   ),
 );
+
+bot.on("contact", (msg) => {
+  const chatId = msg.chat.id;
+
+  const phoneNumber = msg.contact?.phone_number;
+
+  if (phoneNumber) {
+    // Update session with phone number
+    userSessions[chatId].phone = phoneNumber;
+
+    // Move to the next stage and check room availability
+    const session = userSessions[chatId];
+
+    if (session && session.bookingStage === "awaiting_phone_number") {
+      // Proceed with availability check or next step in the booking flow
+      session.bookingStage = "check_availability";
+
+      // Now we call the handler to check the availability and move the flow forward
+      handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+    } else {
+      bot.sendMessage(chatId, i18next.t("errorOccurred"));
+    }
+  } else {
+    bot.sendMessage(chatId, i18next.t("noContactInfoReceived"));
+    console.error("No contact info received");
+  }
+});
