@@ -6,12 +6,12 @@ export const sendOrUpdateRoomTypeDetails = (
   bot: TelegramBot,
   chatId: number,
   messageId: number | null,
-  currentRoomTypeIndex: number,
+  indexOfRoom: number,
   rooms: TRoomType[],
 ) => {
-  const roomType = rooms[currentRoomTypeIndex];
+  const roomType = rooms[indexOfRoom];
   const inlineKeyboard = [
-    ...(currentRoomTypeIndex < rooms.length - 1
+    ...(indexOfRoom < rooms.length - 1
       ? [[{ text: "Next", callback_data: "next_room_type" }]]
       : []),
     [
@@ -23,7 +23,7 @@ export const sendOrUpdateRoomTypeDetails = (
   ];
 
   // Add "Back" button if it's not the first room
-  if (currentRoomTypeIndex > 0) {
+  if (indexOfRoom > 0) {
     inlineKeyboard.push([
       { text: "Back", callback_data: "previous_room_type" },
     ]);

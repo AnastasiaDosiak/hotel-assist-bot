@@ -54,7 +54,6 @@ export const handleProgramSelection = async (
   const service = await ExtraService.findOne({
     where: { "programs.programName": programName },
   });
-  console.log(service, 'service >>>')
   if (service) {
     const program = service.programs.find((p) => p.programName === programName);
 

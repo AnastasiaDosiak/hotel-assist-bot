@@ -44,12 +44,19 @@ bot.onText(BOT_START_MESSAGE, (msg) => {
 
 // Handle standard messages
 bot.on("message", (msg) => {
-  handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+  handleTextMessage(
+    bot,
+    msg,
+    userSessions,
+    rooms,
+    currentRoomTypeIndex,
+    (index) => (currentRoomTypeIndex = index),
+  );
 });
 
 // Handle callback queries (from inline buttons)
 bot.on("callback_query", (callbackQuery) => {
-  handleCallbackQuery(
+  return handleCallbackQuery(
     bot,
     callbackQuery,
     rooms,
@@ -61,5 +68,12 @@ bot.on("callback_query", (callbackQuery) => {
 
 // Handle contact information sharing (e.g., phone numbers)
 bot.on("contact", (msg) => {
-  handleContactMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+  handleContactMessage(
+    bot,
+    msg,
+    userSessions,
+    rooms,
+    currentRoomTypeIndex,
+    (index) => (currentRoomTypeIndex = index),
+  );
 });

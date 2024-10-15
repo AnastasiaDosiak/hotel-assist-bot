@@ -9,6 +9,7 @@ export const handleContactMessage = (
   userSessions: TUserSession,
   rooms: TRoomType[],
   currentRoomTypeIndex: number,
+  setCurrentRoomTypeIndex: (index: number) => void,
 ) => {
   const chatId = msg.chat.id;
 
@@ -22,11 +23,17 @@ export const handleContactMessage = (
     const session = userSessions[chatId];
 
     if (session && session.bookingStage === "awaiting_phone_number") {
-      // Proceed with availability check or next step in the booking flow
       session.bookingStage = "check_availability";
 
       // Now we call the handler to check the availability and move the flow forward
-      handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+      handleTextMessage(
+        bot,
+        msg,
+        userSessions,
+        rooms,
+        currentRoomTypeIndex,
+        setCurrentRoomTypeIndex,
+      );
     } else {
       bot.sendMessage(chatId, i18next.t("bookingProcess.errorOccurred"));
     }
@@ -35,4 +42,3 @@ export const handleContactMessage = (
     console.error("No contact info received");
   }
 };
-

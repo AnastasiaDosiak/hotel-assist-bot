@@ -1,3 +1,5 @@
+import TelegramBot from "node-telegram-bot-api";
+
 export type TRoomType = {
   type: string;
   imageUrl: string;
@@ -28,3 +30,17 @@ export type TUserBookingData = {
   startDate: string;
   endDate: string;
 };
+
+export type CallbackHandler = (props: {
+  bot: TelegramBot;
+  chatId: number;
+  data: string;
+  userSessions?: TUserSession;
+  message?: TelegramBot.Message;
+  rooms?: TRoomType[];
+  currentRoomTypeIndex?: number;
+}) => void;
+
+export interface CallbackHandlersMap {
+  [key: string]: CallbackHandler;
+}

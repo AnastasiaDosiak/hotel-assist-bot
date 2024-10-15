@@ -21,6 +21,7 @@ export const handleTextMessage = (
   userSessions: TUserSession,
   rooms: TRoomType[],
   currentRoomTypeIndex: number,
+  setCurrentRoomTypeIndex: (index: number) => void,
 ) => {
   const chatId = msg.chat.id;
   const session = userSessions[chatId];
@@ -175,6 +176,8 @@ export const handleTextMessage = (
             }),
             options,
           );
+          // start from the first one
+          setCurrentRoomTypeIndex(0);
           delete userSessions[chatId]; // Clear session after booking is complete
         })
         .catch((error) => {

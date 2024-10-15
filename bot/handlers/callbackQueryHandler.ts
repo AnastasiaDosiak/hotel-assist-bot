@@ -1,11 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
+import { TRoomType, TUserSession } from "../common/types";
 import { sendOrUpdateRoomTypeDetails } from "../services/roomService";
-import { TRoomType, TSessionData, TUserSession } from "../common/types";
-import i18next from "i18next";
-import {
-  handleProgramSelection,
-  handleServiceCategory,
-} from "./extraServicesHandler";
+import callbackHandlers from "./ callbackHandlers";
 
 export const handleCallbackQuery = (
   bot: TelegramBot,
@@ -21,48 +17,47 @@ export const handleCallbackQuery = (
 
   let newIndex = currentRoomTypeIndex;
 
-  if (data.startsWith("select_service_")) {
-    const serviceName = data.replace("select_service_", "");
-    handleServiceCategory(bot, callbackQuery.message!.chat.id, serviceName);
-  } else if (data.startsWith("select_program_")) {
-    const programName = data.replace("select_program_", "");
-    handleProgramSelection(bot, callbackQuery.message!.chat.id, programName);
-  } else if (
-    data === "next_room_type" &&
-    currentRoomTypeIndex < rooms.length - 1
-  ) {
-    newIndex = currentRoomTypeIndex + 1;
-  } else if (data === "previous_room_type" && currentRoomTypeIndex > 0) {
-    newIndex = currentRoomTypeIndex - 1;
-  } else if (data.startsWith("book_room_type_")) {
-    // Start the booking process
-    userSessions[chatId] = {
-      bookingStage: "awaiting_checkin_date",
-    } as TSessionData;
+  // First handle dynamic prefixes
+  const prefixMatch = Object.keys(callbackHandlers).find((key) =>
+    data.startsWith(key),
+  );
 
-    // Disable the buttons after room selection
-    bot.editMessageReplyMarkup(
-      {
-        inline_keyboard: [],
-      },
-      {
-        chat_id: chatId,
-        message_id: message.message_id,
-      },
-    );
-    bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckInDate"));
-  } else if (data.startsWith("continue_reservation_")) {
-    const nextAvailableDate = data.split("_")[2];
-    userSessions[chatId].checkInDate = nextAvailableDate;
-    userSessions[chatId].bookingStage = "awaiting_checkout_date";
-    bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
-  } else if (data === "see_other_rooms") {
-    sendOrUpdateRoomTypeDetails(bot, chatId, null, currentRoomTypeIndex, rooms);
+  if (prefixMatch) {
+    const handler = callbackHandlers[prefixMatch];
+    handler({
+      bot,
+      chatId,
+      data,
+      userSessions,
+      message,
+      rooms,
+      currentRoomTypeIndex,
+    });
   }
 
+  // Handle specific actions without dynamic prefixes
+  switch (data) {
+    case "next_room_type":
+      if (currentRoomTypeIndex < rooms.length - 1) {
+        newIndex = currentRoomTypeIndex + 1;
+      }
+      break;
+
+    case "previous_room_type":
+      if (currentRoomTypeIndex > 0) {
+        newIndex = currentRoomTypeIndex - 1;
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  // Log the comparison of old and new index
   if (newIndex !== currentRoomTypeIndex) {
     setCurrentRoomTypeIndex(newIndex);
 
+    // Ensure the room details are updated based on the new index
     sendOrUpdateRoomTypeDetails(
       bot,
       message.chat.id,
