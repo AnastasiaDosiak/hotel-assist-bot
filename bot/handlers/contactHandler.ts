@@ -28,27 +28,11 @@ export const handleContactMessage = (
       // Now we call the handler to check the availability and move the flow forward
       handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
     } else {
-      bot.sendMessage(chatId, i18next.t("errorOccurred"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.errorOccurred"));
     }
   } else {
-    bot.sendMessage(chatId, i18next.t("noContactInfoReceived"));
+    bot.sendMessage(chatId, i18next.t("bookingProcess.noContactInfoReceived"));
     console.error("No contact info received");
   }
 };
 
-// else {
-//   userSessions[chatId].bookingStage = "awaiting_phone_number";
-//   bot.sendMessage(chatId, i18next.t("sharePhoneNumber"), {
-//     reply_markup: {
-//       keyboard: [
-//         [
-//           {
-//             text: i18next.t("shareContact"),
-//             request_contact: true,
-//           },
-//         ],
-//       ],
-//       one_time_keyboard: true,
-//     },
-//   });
-// }

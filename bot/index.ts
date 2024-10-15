@@ -1,10 +1,10 @@
 import TelegramBot from "node-telegram-bot-api";
 import { roomTypes } from "../backend/common/constants";
-import { BOT_START_MESSAGE, defaultOptions, TOKEN } from "./common/constants";
+import { BOT_START_MESSAGE, TOKEN } from "./common/constants";
 import { handleTextMessage } from "./handlers/messageHandler";
 import { handleCallbackQuery } from "./handlers/callbackQueryHandler";
 import { handleContactMessage } from "./handlers/contactHandler";
-import { initI18n } from "./i18n";
+import { initI18n } from "../i18n";
 import { TRoomType, TUserSession } from "./common/types";
 import i18next from "i18next";
 
@@ -26,7 +26,20 @@ const rooms = roomTypes.map((room) => ({
 // Handle /start command
 bot.onText(BOT_START_MESSAGE, (msg) => {
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, i18next.t("startMessage"), defaultOptions);
+  const options = {
+    reply_markup: {
+      keyboard: [
+        [{ text: i18next.t("bookRoom") }],
+        [{ text: i18next.t("additionalServices") }],
+        [{ text: i18next.t("feedback") }],
+        [{ text: i18next.t("cityHelp") }],
+        [{ text: i18next.t("checkInOut") }],
+      ],
+      resize_keyboard: true,
+      one_time_keyboard: false,
+    },
+  };
+  bot.sendMessage(chatId, i18next.t("startMessage"), options);
 });
 
 // Handle standard messages

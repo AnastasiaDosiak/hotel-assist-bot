@@ -13,7 +13,7 @@ import {
 } from "../common/utils";
 import { TRoomType, TUserSession } from "../common/types";
 import { dateRegex, isValidName } from "../common/validators";
-import { defaultOptions } from "../common/constants";
+import { handleExtraServices } from "./extraServicesHandler";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -29,22 +29,28 @@ export const handleTextMessage = (
     if (msg.text === i18next.t("bookRoom")) {
       sendOrUpdateRoomTypeDetails(bot, chatId, null, 0, rooms);
     }
+    if (msg.text === i18next.t("additionalServices")) {
+      handleExtraServices(bot, chatId);
+    }
   } else if (session.bookingStage === "awaiting_checkin_date") {
     userSessions[chatId].roomType = rooms[currentRoomTypeIndex].type;
     if (!isValidDate(msg.text!)) {
-      bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.invalidDateFormat"));
     } else {
       userSessions[chatId].checkInDate = msg.text!;
       userSessions[chatId].bookingStage = "awaiting_checkout_date";
-      bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
     }
   } else if (session.bookingStage === "awaiting_checkout_date") {
     if (!isValidDate(msg.text!)) {
-      bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.invalidDateFormat"));
     } else if (
       !isCheckoutDateValid(userSessions[chatId].checkInDate, msg.text!)
     ) {
-      bot.sendMessage(chatId, i18next.t("checkoutEarlierThanCheckin"));
+      bot.sendMessage(
+        chatId,
+        i18next.t("bookingProcess.checkoutEarlierThanCheckin"),
+      );
     } else {
       userSessions[chatId].checkOutDate = msg.text!;
       const roomType = rooms[currentRoomTypeIndex].type;
@@ -68,13 +74,13 @@ export const handleTextMessage = (
                   inline_keyboard: [
                     [
                       {
-                        text: i18next.t("continueReservation", {
+                        text: i18next.t("bookingProcess.continueReservation", {
                           nextAvailableDate,
                         }),
                         callback_data: `continue_reservation_${nextAvailableDate}`,
                       },
                       {
-                        text: i18next.t("seeOtherRooms"),
+                        text: i18next.t("bookingProcess.seeOtherRooms"),
                         callback_data: "see_other_rooms",
                       },
                     ],
@@ -86,37 +92,40 @@ export const handleTextMessage = (
             // If room is available, proceed with gathering user details
             userSessions[chatId].availableRoomId = response.id; // Store available room id in the session
             userSessions[chatId].bookingStage = "awaiting_first_name";
-            bot.sendMessage(chatId, i18next.t("enterFirstName"));
+            bot.sendMessage(chatId, i18next.t("bookingProcess.enterFirstName"));
           } else {
             console.log("response: ", response);
-            bot.sendMessage(chatId, i18next.t("noRoomsAvailable"));
+            bot.sendMessage(
+              chatId,
+              i18next.t("bookingProcess.noRoomsAvailable"),
+            );
             delete userSessions[chatId];
           }
         })
         .catch((error) => {
-          bot.sendMessage(chatId, i18next.t("errorOccurred"));
+          bot.sendMessage(chatId, i18next.t("bookingProcess.errorOccurred"));
           console.error(error);
         });
     }
   } else if (session.bookingStage === "awaiting_first_name") {
     if (!isValidName(msg.text!)) {
-      bot.sendMessage(chatId, i18next.t("invalidFirstName"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.invalidFirstName"));
     } else {
       userSessions[chatId].firstName = msg.text!;
       userSessions[chatId].bookingStage = "awaiting_last_name";
-      bot.sendMessage(chatId, i18next.t("enterLastName"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.enterLastName"));
     }
   } else if (session.bookingStage === "awaiting_last_name") {
     if (!isValidName(msg.text!)) {
-      bot.sendMessage(chatId, i18next.t("invalidLastName"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.invalidLastName"));
     } else {
       userSessions[chatId].bookingStage = "awaiting_phone_number";
-      bot.sendMessage(chatId, i18next.t("sharePhoneNumber"), {
+      bot.sendMessage(chatId, i18next.t("bookingProcess.sharePhoneNumber"), {
         reply_markup: {
           keyboard: [
             [
               {
-                text: i18next.t("shareContact"),
+                text: i18next.t("bookingProcess.shareContact"),
                 request_contact: true,
               },
             ],
@@ -126,6 +135,19 @@ export const handleTextMessage = (
       });
     }
   } else if (session.bookingStage === "check_availability") {
+    const options = {
+      reply_markup: {
+        keyboard: [
+          [{ text: i18next.t("bookRoom") }],
+          [{ text: i18next.t("additionalServices") }],
+          [{ text: i18next.t("feedback") }],
+          [{ text: i18next.t("cityHelp") }],
+          [{ text: i18next.t("checkInOut") }],
+        ],
+        size_keyboard: true,
+        one_time_keyboard: false,
+      },
+    };
     // Retrieve the available room that was checked earlier
     const availableRoomId = userSessions[chatId].availableRoomId;
     if (availableRoomId) {
@@ -141,7 +163,7 @@ export const handleTextMessage = (
 
           bot.sendMessage(
             chatId,
-            i18next.t("bookingConfirmation", {
+            i18next.t("bookingProcess.bookingConfirmation", {
               roomType: userSessions[chatId].roomType,
               checkIn: userSessions[chatId].checkInDate,
               checkOut: userSessions[chatId].checkOutDate,
@@ -151,16 +173,16 @@ export const handleTextMessage = (
               lastName: userSessions[chatId].lastName,
               phone: userSessions[chatId].phone,
             }),
-            defaultOptions,
+            options,
           );
           delete userSessions[chatId]; // Clear session after booking is complete
         })
         .catch((error) => {
-          bot.sendMessage(chatId, i18next.t("bookingError"));
+          bot.sendMessage(chatId, i18next.t("bookingProcess.bookingError"));
           console.error(error);
         });
     } else {
-      bot.sendMessage(chatId, i18next.t("noRoomsAvailable"));
+      bot.sendMessage(chatId, i18next.t("bookingProcess.noRoomsAvailable"));
       console.error("No available room found in session");
     }
   }

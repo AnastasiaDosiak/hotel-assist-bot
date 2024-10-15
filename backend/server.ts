@@ -1,32 +1,14 @@
 import express, { Request, Response } from "express";
-import { faker } from "@faker-js/faker";
 import { sequelize } from "./db";
 import { Room } from "./models/room";
-import { roomTypes } from "./common/constants";
+import { generateExtraServices, generateRooms } from "./servicesData";
+import { initI18n } from "../i18n";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const generateFakeRooms = async (numRooms: number) => {
-  for (let i = 0; i < numRooms; i++) {
-    const roomType = faker.helpers.arrayElement(roomTypes);
-
-    await Room.create({
-      id: faker.string.uuid(),
-      type: roomType.type,
-      available: faker.datatype.boolean(),
-      price: roomType.price,
-      currency: "UAH",
-      imageUrl: roomType.imageUrl,
-      roomNumber: faker.number.int({ min: 1, max: 50 }),
-      bookedDates: [],
-      minGuests: roomType.minGuests,
-      maxGuests: roomType.maxGuests,
-      bookedBy: [],
-      extraServices: [],
-    });
-  }
-};
+// Initialize i18n (localization)
+initI18n();
 
 app.get("/rooms", async (req: Request, res: Response) => {
   const rooms = await Room.findAll();
@@ -34,7 +16,8 @@ app.get("/rooms", async (req: Request, res: Response) => {
 });
 
 sequelize.sync({ force: true }).then(async () => {
-  await generateFakeRooms(50);
+  await generateRooms(50);
+  await generateExtraServices();
 
   app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);

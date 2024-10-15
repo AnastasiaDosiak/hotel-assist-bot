@@ -35,7 +35,7 @@ export const sendOrUpdateRoomTypeDetails = (
     },
   };
 
-  const caption = i18next.t("roomDetails", {
+  const caption = i18next.t("bookingProcess.roomDetails", {
     type: roomType.type,
     price: roomType.price,
     guests: roomType.guests,

@@ -10,7 +10,7 @@ export const initI18n = () => {
       escapeValue: false,
     },
     backend: {
-      loadPath: path.join(__dirname, "./locales/{{lng}}/translation.json"),
+      loadPath: path.join(__dirname, "/locales/{{lng}}/translation.json"),
     },
   });
 };
