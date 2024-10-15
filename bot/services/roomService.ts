@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import i18next from "i18next";
-import { TRoomType } from "./common/types";
+import { TRoomType } from "../common/types";
 
 export const sendOrUpdateRoomTypeDetails = (
   bot: TelegramBot,

@@ -1,16 +1,18 @@
 import TelegramBot from "node-telegram-bot-api";
 import i18next from "i18next";
-import { sendOrUpdateRoomTypeDetails } from "./botActions";
+import { sendOrUpdateRoomTypeDetails } from "../services/roomService";
 import {
-  bookRoom,
   checkRoomAvailability,
+  bookRoom,
   gatherBookingData,
-  getDifferenceInDays,
-  isCheckoutDateValid,
+} from "../services/bookingService";
+import {
   isValidDate,
-} from "./common/utils";
-import { isValidName } from "./common/validators";
-import { TRoomType, TSessionData, TUserSession } from "./common/types";
+  isCheckoutDateValid,
+  getDifferenceInDays,
+} from "../common/utils";
+import { TRoomType, TUserSession } from "../common/types";
+import { dateRegex, isValidName } from "../common/validators";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -55,7 +57,7 @@ export const handleTextMessage = (
         .then((response) => {
           if (typeof response === "string") {
             // If room is unavailable, send options to the user
-            const nextAvailableDate = response.match(/\d{2}\/\d{2}\/\d{4}/);
+            const nextAvailableDate = response.match(dateRegex);
             const nextAvailableDateMatch = nextAvailableDate
               ? nextAvailableDate[0]
               : null;
@@ -178,63 +180,4 @@ export const handleTextMessage = (
       console.error("No available room found in session");
     }
   }
-};
-
-export const handleCallbackQuery = (
-  bot: TelegramBot,
-  callbackQuery: TelegramBot.CallbackQuery,
-  rooms: TRoomType[],
-  currentRoomTypeIndex: number,
-  setCurrentRoomTypeIndex: (index: number) => void,
-  userSessions: TUserSession,
-) => {
-  const message = callbackQuery.message!;
-  const data = callbackQuery.data!;
-  const chatId = message.chat.id;
-
-  let newIndex = currentRoomTypeIndex;
-
-  if (data === "next_room_type" && currentRoomTypeIndex < rooms.length - 1) {
-    newIndex = currentRoomTypeIndex + 1;
-  } else if (data === "previous_room_type" && currentRoomTypeIndex > 0) {
-    newIndex = currentRoomTypeIndex - 1;
-  } else if (data.startsWith("book_room_type_")) {
-    // Start the booking process
-    userSessions[chatId] = {
-      bookingStage: "awaiting_checkin_date",
-    } as TSessionData;
-
-    // Disable the buttons after room selection
-    bot.editMessageReplyMarkup(
-      {
-        inline_keyboard: [],
-      },
-      {
-        chat_id: chatId,
-        message_id: message.message_id,
-      },
-    );
-    bot.sendMessage(chatId, i18next.t("enterCheckInDate"));
-  } else if (data.startsWith("continue_reservation_")) {
-    const nextAvailableDate = data.split("_")[2];
-    userSessions[chatId].checkInDate = nextAvailableDate;
-    userSessions[chatId].bookingStage = "awaiting_checkout_date";
-    bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
-  } else if (data === "see_other_rooms") {
-    sendOrUpdateRoomTypeDetails(bot, chatId, null, currentRoomTypeIndex, rooms);
-  }
-
-  if (newIndex !== currentRoomTypeIndex) {
-    setCurrentRoomTypeIndex(newIndex);
-
-    sendOrUpdateRoomTypeDetails(
-      bot,
-      message.chat.id,
-      message.message_id,
-      newIndex,
-      rooms,
-    );
-  }
-
-  bot.answerCallbackQuery(callbackQuery.id);
 };

@@ -1,30 +1,31 @@
 import TelegramBot from "node-telegram-bot-api";
 import { roomTypes } from "../backend/common/constants";
 import { BOT_START_MESSAGE, TOKEN } from "./common/constants";
-import { handleTextMessage, handleCallbackQuery } from "./handlers";
-import i18next from "i18next";
+import { handleTextMessage } from "./handlers/messageHandler";
+import { handleCallbackQuery } from "./handlers/callbackQueryHandler";
+import { handleContactMessage } from "./handlers/contactHandler";
 import { initI18n } from "./i18n";
 import { TRoomType, TUserSession } from "./common/types";
+import i18next from "i18next";
 
 const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
-
 let currentRoomTypeIndex = 0;
 const userSessions: TUserSession = {};
 
+// Initialize i18n (localization)
 initI18n();
 
-const rooms = roomTypes.map((room) => {
-  return {
-    type: room.type,
-    imageUrl: room.imageUrl,
-    price: room.price,
-    guests: `${room.minGuests} - ${room.maxGuests}`,
-  };
-}) as TRoomType[];
+// Prepare room data for the bot
+const rooms = roomTypes.map((room) => ({
+  type: room.type,
+  imageUrl: room.imageUrl,
+  price: room.price,
+  guests: `${room.minGuests} - ${room.maxGuests}`,
+})) as TRoomType[];
 
+// Handle /start command
 bot.onText(BOT_START_MESSAGE, (msg) => {
   const chatId = msg.chat.id;
-
   const options = {
     reply_markup: {
       keyboard: [
@@ -41,14 +42,16 @@ bot.onText(BOT_START_MESSAGE, (msg) => {
       one_time_keyboard: false,
     },
   };
-
   bot.sendMessage(chatId, i18next.t("startMessage"), options);
 });
+
+// Handle standard messages
 bot.on("message", (msg) => {
-  return handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
+  handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
 });
 
-bot.on("callback_query", (callbackQuery) =>
+// Handle callback queries (from inline buttons)
+bot.on("callback_query", (callbackQuery) => {
   handleCallbackQuery(
     bot,
     callbackQuery,
@@ -56,32 +59,10 @@ bot.on("callback_query", (callbackQuery) =>
     currentRoomTypeIndex,
     (index) => (currentRoomTypeIndex = index),
     userSessions,
-  ),
-);
+  );
+});
 
+// Handle contact information sharing (e.g., phone numbers)
 bot.on("contact", (msg) => {
-  const chatId = msg.chat.id;
-
-  const phoneNumber = msg.contact?.phone_number;
-
-  if (phoneNumber) {
-    // Update session with phone number
-    userSessions[chatId].phone = phoneNumber;
-
-    // Move to the next stage and check room availability
-    const session = userSessions[chatId];
-
-    if (session && session.bookingStage === "awaiting_phone_number") {
-      // Proceed with availability check or next step in the booking flow
-      session.bookingStage = "check_availability";
-
-      // Now we call the handler to check the availability and move the flow forward
-      handleTextMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
-    } else {
-      bot.sendMessage(chatId, i18next.t("errorOccurred"));
-    }
-  } else {
-    bot.sendMessage(chatId, i18next.t("noContactInfoReceived"));
-    console.error("No contact info received");
-  }
+  handleContactMessage(bot, msg, userSessions, rooms, currentRoomTypeIndex);
 });
