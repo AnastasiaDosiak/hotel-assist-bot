@@ -13,6 +13,7 @@ import {
 } from "../common/utils";
 import { TRoomType, TUserSession } from "../common/types";
 import { dateRegex, isValidName } from "../common/validators";
+import { defaultOptions } from "../common/constants";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -125,23 +126,6 @@ export const handleTextMessage = (
       });
     }
   } else if (session.bookingStage === "check_availability") {
-    // show default keyboard after sharing contacts again
-    const options = {
-      reply_markup: {
-        keyboard: [
-          [{ text: i18next.t("bookRoom") }],
-          [{ text: i18next.t("infoServices") }],
-          [{ text: i18next.t("clientSupport") }],
-          [{ text: i18next.t("additionalServices") }],
-          [{ text: i18next.t("messagesAndReminders") }],
-          [{ text: i18next.t("feedback") }],
-          [{ text: i18next.t("cityHelp") }],
-          [{ text: i18next.t("checkInOut") }],
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: false,
-      },
-    };
     // Retrieve the available room that was checked earlier
     const availableRoomId = userSessions[chatId].availableRoomId;
     if (availableRoomId) {
@@ -167,7 +151,7 @@ export const handleTextMessage = (
               lastName: userSessions[chatId].lastName,
               phone: userSessions[chatId].phone,
             }),
-            options,
+            defaultOptions,
           );
           delete userSessions[chatId]; // Clear session after booking is complete
         })
