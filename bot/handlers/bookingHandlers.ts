@@ -2,23 +2,25 @@ import i18next from "i18next";
 import { CallbackHandler, TSessionData } from "../common/types";
 
 // Handler for room booking
-export const handleBookRoom: CallbackHandler = ({
+export const handleBookRoom: CallbackHandler = async ({
   bot,
   chatId,
   userSessions,
   message,
+  currentRoomIndex,
 }) => {
   if (userSessions && message) {
     userSessions[chatId] = {
-      bookingStage: "awaiting_checkin_date",
+      bookingstage: "awaiting_checkin_date",
+      roomIndex: currentRoomIndex,
     } as TSessionData;
 
     // Disable the buttons after room selection
-    bot.editMessageReplyMarkup(
+    await bot.editMessageReplyMarkup(
       { inline_keyboard: [] },
       { chat_id: chatId, message_id: message.message_id },
     );
-    bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckInDate"));
+    await bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckInDate"));
   }
 };
 
@@ -32,7 +34,7 @@ export const handleContinueReservation: CallbackHandler = ({
   if (userSessions) {
     const nextAvailableDate = data.split("_")[2];
     userSessions[chatId].checkInDate = nextAvailableDate;
-    userSessions[chatId].bookingStage = "awaiting_checkout_date";
+    userSessions[chatId].bookingstage = "awaiting_checkout_date";
     bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
   }
 };

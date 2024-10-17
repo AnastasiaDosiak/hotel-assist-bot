@@ -27,7 +27,9 @@
     "shareContact": "Share your contact to continue reservation.",
     "noContactInfoReceived": "No contact info received. Please, share your contact to continue reservation.",
     "bookingError": "Seems like some error happened during booking. Please, try again to book the room.",
-    "errorOccurred": "We are sorry to tell that some error happened during booking. Please, try again or reach to our manager directly +380673146512"
+    "errorOccurred": "We are sorry to tell that some error happened during booking. Please, try again or reach to our manager directly +380673146512",
+    "roomUnavailable": "Room {{roomType}} is unavailable in that dates. You can book {{roomType}} room from {{nextAvailableDate}} or look at other rooms.",
+    "roomNotFound": "No room found with such id: {{roomId}}"
   },
   "extraServices": {
     "selectService": "Please, select a service you are interested in to continue.",

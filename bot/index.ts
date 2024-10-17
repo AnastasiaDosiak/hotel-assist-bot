@@ -1,16 +1,16 @@
 import TelegramBot from "node-telegram-bot-api";
 import { roomTypes } from "../backend/common/constants";
 import { BOT_START_MESSAGE, TOKEN } from "./common/constants";
-import { handleTextMessage } from "./handlers/messageHandler";
-import { handleCallbackQuery } from "./handlers/callbackQueryHandler";
-import { handleContactMessage } from "./handlers/contactHandler";
 import { initI18n } from "../i18n";
-import { TRoomType, TUserSession } from "./common/types";
-import i18next from "i18next";
+import { TRoomType, TSessionData, TUserSession } from "./common/types";
+import { messageCommand } from "./commands/message";
+import { callbackCommand } from "./commands/callback";
+import { contactCommand } from "./commands/contact";
+import { startCommand } from "./commands/start";
 
 const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
-let currentRoomTypeIndex = 0;
 const userSessions: TUserSession = {};
+let currentRoomIndex = 0;
 
 // Initialize i18n (localization)
 initI18n();
@@ -23,57 +23,39 @@ const rooms = roomTypes.map((room) => ({
   guests: `${room.minGuests} - ${room.maxGuests}`,
 })) as TRoomType[];
 
-// Handle /start command
-bot.onText(BOT_START_MESSAGE, (msg) => {
-  const chatId = msg.chat.id;
-  const options = {
-    reply_markup: {
-      keyboard: [
-        [{ text: i18next.t("bookRoom") }],
-        [{ text: i18next.t("additionalServices") }],
-        [{ text: i18next.t("feedback") }],
-        [{ text: i18next.t("cityHelp") }],
-        [{ text: i18next.t("checkInOut") }],
-      ],
-      resize_keyboard: true,
-      one_time_keyboard: false,
-    },
-  };
-  bot.sendMessage(chatId, i18next.t("startMessage"), options);
+const commonParams = {
+  bot,
+  userSessions,
+  rooms,
+  currentRoomIndex,
+  setCurrentRoomIndex: (index: number) => (currentRoomIndex = index),
+};
+
+// Handle /start command specifically
+bot.on("text", (msg) => {
+  if (msg.text?.match(BOT_START_MESSAGE)) {
+    startCommand(commonParams).handler(msg);
+  } else {
+    messageCommand(commonParams).handler(msg);
+  }
+  // clear the session so user can start a new booking
+  if (
+    userSessions[msg.chat.id] &&
+    userSessions[msg.chat.id].bookingstage &&
+    userSessions[msg.chat.id].bookingstage === "booking_completed"
+  ) {
+    userSessions[msg.chat.id] = {} as TSessionData;
+  }
 });
 
-// Handle standard messages
-bot.on("message", (msg) => {
-  handleTextMessage(
-    bot,
-    msg,
-    userSessions,
-    rooms,
-    currentRoomTypeIndex,
-    (index) => (currentRoomTypeIndex = index),
-  );
-});
-
-// Handle callback queries (from inline buttons)
+// Handle callback queries
 bot.on("callback_query", (callbackQuery) => {
-  return handleCallbackQuery(
-    bot,
-    callbackQuery,
-    rooms,
-    currentRoomTypeIndex,
-    (index) => (currentRoomTypeIndex = index),
-    userSessions,
-  );
+  callbackCommand({ ...commonParams, currentRoomIndex }).handler(callbackQuery);
 });
 
-// Handle contact information sharing (e.g., phone numbers)
+// Handle contact messages
 bot.on("contact", (msg) => {
-  handleContactMessage(
-    bot,
-    msg,
-    userSessions,
-    rooms,
-    currentRoomTypeIndex,
-    (index) => (currentRoomTypeIndex = index),
-  );
+  contactCommand(commonParams).handler(msg);
 });
+
+bot.on("polling_error", console.log);

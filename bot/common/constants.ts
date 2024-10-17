@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import i18next from "i18next";
 
 dotenv.config();
 

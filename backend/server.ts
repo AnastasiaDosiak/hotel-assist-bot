@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { sequelize } from "./db";
-import { Room } from "./models/room";
+import { Room } from "./models/Room";
 import { generateExtraServices, generateRooms } from "./servicesData";
 import { initI18n } from "../i18n";
 
@@ -16,7 +16,7 @@ app.get("/rooms", async (req: Request, res: Response) => {
 });
 
 sequelize.sync({ force: true }).then(async () => {
-  await generateRooms(50);
+  await generateRooms(5);
   await generateExtraServices();
 
   app.listen(PORT, () => {

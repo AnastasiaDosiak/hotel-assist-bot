@@ -7,16 +7,15 @@ export const handleCallbackQuery = (
   bot: TelegramBot,
   callbackQuery: TelegramBot.CallbackQuery,
   rooms: TRoomType[],
-  currentRoomTypeIndex: number,
-  setCurrentRoomTypeIndex: (index: number) => void,
   userSessions: TUserSession,
+  currentRoomIndex: number,
+  setCurrentRoomIndex: (index: number) => number,
 ) => {
   const message = callbackQuery.message!;
   const data = callbackQuery.data!;
   const chatId = message.chat.id;
-
-  let newIndex = currentRoomTypeIndex;
-
+  let privateRoomIndex = currentRoomIndex;
+  console.log(privateRoomIndex, "privateRoomIndex IN CALLBACK");
   // First handle dynamic prefixes
   const prefixMatch = Object.keys(callbackHandlers).find((key) =>
     data.startsWith(key),
@@ -31,21 +30,23 @@ export const handleCallbackQuery = (
       userSessions,
       message,
       rooms,
-      currentRoomTypeIndex,
+      currentRoomIndex: privateRoomIndex,
     });
   }
 
   // Handle specific actions without dynamic prefixes
   switch (data) {
     case "next_room_type":
-      if (currentRoomTypeIndex < rooms.length - 1) {
-        newIndex = currentRoomTypeIndex + 1;
+      if (currentRoomIndex < rooms.length - 1) {
+        privateRoomIndex = currentRoomIndex + 1;
+        setCurrentRoomIndex(currentRoomIndex + 1);
       }
       break;
 
     case "previous_room_type":
-      if (currentRoomTypeIndex > 0) {
-        newIndex = currentRoomTypeIndex - 1;
+      if (currentRoomIndex > 0) {
+        privateRoomIndex = currentRoomIndex - 1;
+        setCurrentRoomIndex(currentRoomIndex - 1);
       }
       break;
 
@@ -53,16 +54,14 @@ export const handleCallbackQuery = (
       break;
   }
 
-  // Log the comparison of old and new index
-  if (newIndex !== currentRoomTypeIndex) {
-    setCurrentRoomTypeIndex(newIndex);
-
-    // Ensure the room details are updated based on the new index
+  const updateRoomMessage =
+    data.includes("next_room_type") || data.includes("previous_room_type");
+  if (updateRoomMessage) {
     sendOrUpdateRoomTypeDetails(
       bot,
       message.chat.id,
       message.message_id,
-      newIndex,
+      privateRoomIndex,
       rooms,
     );
   }

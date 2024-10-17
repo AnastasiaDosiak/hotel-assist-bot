@@ -8,7 +8,7 @@ export type TRoomType = {
 };
 
 export type TSessionData = {
-  bookingStage: string;
+  bookingstage: string;
   checkInDate: string;
   checkOutDate: string;
   firstName: string;
@@ -16,6 +16,7 @@ export type TSessionData = {
   phone: string;
   roomType: string;
   availableRoomId: string;
+  roomIndex: number;
 };
 
 export type TUserSession = {
@@ -38,9 +39,25 @@ export type CallbackHandler = (props: {
   userSessions?: TUserSession;
   message?: TelegramBot.Message;
   rooms?: TRoomType[];
-  currentRoomTypeIndex?: number;
+  currentRoomIndex?: number;
 }) => void;
 
 export interface CallbackHandlersMap {
   [key: string]: CallbackHandler;
+}
+
+export interface CommandParams {
+  bot: TelegramBot;
+  userSessions: TUserSession;
+  rooms: TRoomType[];
+  currentRoomIndex: number;
+  setCurrentRoomIndex: (index: number) => number;
+}
+
+export interface CommonStepParams {
+  bot: TelegramBot;
+  rooms: TRoomType[];
+  msg: TelegramBot.Message;
+  session: TSessionData;
+  setCurrentRoomIndex: (index: number) => number;
 }

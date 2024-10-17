@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
-import { Room } from "../../backend/models/room";
-import { TUserBookingData, TUserSession } from "../common/types";
+import { Room } from "../../backend/models/Room";
+import { TSessionData, TUserBookingData } from "../common/types";
 import { DATE_FORMAT } from "../common/constants";
+import i18next from "i18next";
 
 export const bookRoom = async (roomId: string, userData: TUserBookingData) => {
   const roomToUpdate = await Room.findOne({
@@ -11,7 +12,7 @@ export const bookRoom = async (roomId: string, userData: TUserBookingData) => {
   if (roomToUpdate) {
     await roomToUpdate?.update({ bookedBy: [userData] });
   } else {
-    throw new Error(`No room found with such id: ${roomId}`);
+    throw new Error(i18next.t("bookingProcess.roomNotFound", { roomId }));
   }
 };
 
@@ -59,22 +60,22 @@ export const checkRoomAvailability = async (
   // If no room is available, return a message with the earliest available date
   if (earliestAvailableDate) {
     const nextAvailableDate = dayjs(earliestAvailableDate).format(DATE_FORMAT);
-    return `Room ${roomType} is unavailable in that dates. You can book ${roomType} room from ${nextAvailableDate} or look at other rooms.`;
+    return i18next.t("bookingProcess.roomUnavailable", {
+      roomType,
+      nextAvailableDate,
+    });
   }
 
   return null; // no future availability information
 };
 
-export const gatherBookingData = (
-  chatId: number,
-  userSessions: TUserSession,
-) => {
+export const gatherBookingData = (chatId: number, session: TSessionData) => {
   return {
     userId: chatId.toString(),
-    phone: userSessions[chatId].phone,
-    firstName: userSessions[chatId].firstName,
-    lastName: userSessions[chatId].lastName,
-    startDate: userSessions[chatId].checkInDate,
-    endDate: userSessions[chatId].checkOutDate,
+    phone: session.phone,
+    firstName: session.firstName,
+    lastName: session.lastName,
+    startDate: session.checkInDate,
+    endDate: session.checkOutDate,
   };
 };

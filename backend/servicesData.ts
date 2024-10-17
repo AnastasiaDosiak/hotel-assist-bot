@@ -1,5 +1,5 @@
 import { roomTypes } from "./common/constants";
-import { Room } from "./models/room";
+import { Room } from "./models/Room";
 import { ExtraService } from "./models/ExtraService";
 import i18next from "i18next";
 import { faker } from "@faker-js/faker";

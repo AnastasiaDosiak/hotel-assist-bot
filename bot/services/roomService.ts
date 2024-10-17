@@ -16,7 +16,7 @@ export const sendOrUpdateRoomTypeDetails = (
       : []),
     [
       {
-        text: "Book this one",
+        text: i18next.t("bookingProcess.bookButton"),
         callback_data: `book_room_type_${roomType.type}`,
       },
     ],
