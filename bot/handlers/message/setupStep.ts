@@ -1,7 +1,7 @@
 import i18next from "i18next";
 import { sendOrUpdateRoomTypeDetails } from "../../services/roomService";
-import { handleExtraServices } from "../extraServicesHandler";
 import { CommonStepParams } from "../../common/types";
+import { handleExtraServices } from "../serviceHandlers";
 
 export const setupStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session, setCurrentRoomIndex } = props;

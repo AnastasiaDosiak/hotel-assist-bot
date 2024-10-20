@@ -16,7 +16,7 @@ app.get("/rooms", async (req: Request, res: Response) => {
 });
 
 sequelize.sync({ force: true }).then(async () => {
-  await generateRooms(5);
+  await generateRooms(50);
   await generateExtraServices();
 
   app.listen(PORT, () => {

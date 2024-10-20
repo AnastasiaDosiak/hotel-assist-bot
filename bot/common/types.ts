@@ -17,6 +17,7 @@ export type TSessionData = {
   roomType: string;
   availableRoomId: string;
   roomIndex: number;
+  programName: string;
 };
 
 export type TUserSession = {
@@ -36,7 +37,7 @@ export type CallbackHandler = (props: {
   bot: TelegramBot;
   chatId: number;
   data: string;
-  userSessions?: TUserSession;
+  userSessions: TUserSession;
   message?: TelegramBot.Message;
   rooms?: TRoomType[];
   currentRoomIndex?: number;
@@ -61,3 +62,5 @@ export interface CommonStepParams {
   session: TSessionData;
   setCurrentRoomIndex: (index: number) => number;
 }
+
+export type OptionsType<T extends Record<string, any>> = T[];

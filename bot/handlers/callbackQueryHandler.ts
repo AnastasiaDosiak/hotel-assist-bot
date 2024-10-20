@@ -1,7 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import { TRoomType, TUserSession } from "../common/types";
 import { sendOrUpdateRoomTypeDetails } from "../services/roomService";
-import callbackHandlers from "./ callbackHandlers";
+import callbackHandlers from "./callbackHandlers";
 
 export const handleCallbackQuery = (
   bot: TelegramBot,
@@ -15,7 +15,7 @@ export const handleCallbackQuery = (
   const data = callbackQuery.data!;
   const chatId = message.chat.id;
   let privateRoomIndex = currentRoomIndex;
-  console.log(privateRoomIndex, "privateRoomIndex IN CALLBACK");
+
   // First handle dynamic prefixes
   const prefixMatch = Object.keys(callbackHandlers).find((key) =>
     data.startsWith(key),
@@ -64,7 +64,16 @@ export const handleCallbackQuery = (
       privateRoomIndex,
       rooms,
     );
+  } else if (
+    data.includes("select_service_") ||
+    data.includes("select_option_") ||
+    data.includes("select_program_") ||
+    data.includes("back_to_services")
+  ) {
+    bot.editMessageReplyMarkup(
+      { inline_keyboard: [] }, // Empty array to remove the keyboard
+      { chat_id: chatId, message_id: message.message_id },
+    );
   }
-
   bot.answerCallbackQuery(callbackQuery.id);
 };

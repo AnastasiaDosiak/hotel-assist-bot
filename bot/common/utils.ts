@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import { DATE_FORMAT } from "./constants";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { TSessionData } from "./types";
+import { OptionsType, TSessionData } from "./types";
+import { ExtraService } from "../../backend/models/ExtraService";
 
 export const isValidDate = (dateString: string) => {
   dayjs.extend(customParseFormat);
@@ -39,4 +40,41 @@ export const resetSession = (session: TSessionData) => {
   session.phone = "";
   session.roomIndex = 0;
   session.roomType = "";
+};
+
+export const getProgramOptions = async (programName: string) => {
+  const services = await ExtraService.findAll();
+  const programOptions =
+    services.flatMap((service) =>
+      service.programs
+        .filter((program) => program.programName === programName)
+        .map((program) => program.options),
+    )[0] || [];
+
+  return programOptions;
+};
+
+export const getOptionDetails = async (
+  programName: string,
+  optionName: string,
+) => {
+  const programOptions = await getProgramOptions(programName);
+  const option = programOptions.find((option) => option.name === optionName);
+  return option;
+};
+
+export const createKeyboardOptions = <T extends Record<string, any>>(
+  options: OptionsType<T>,
+  callbackData: string,
+  parameter: keyof T,
+) => {
+  const mappedOptions = options.map((option) => option[parameter]);
+  const keyboardOptions = mappedOptions.map((option) => [
+    {
+      text: option,
+      callback_data: `${callbackData}${option}`,
+    },
+  ]);
+
+  return keyboardOptions;
 };

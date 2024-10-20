@@ -34,18 +34,62 @@ export const generateExtraServices = async () => {
         {
           programName: i18next.t("extraServices.oneDayPrograms"),
           options: [
-            i18next.t("extraServices.abonmentWellnessDay"),
-            i18next.t("extraServices.spaDayRelaxation"),
+            {
+              name: i18next.t("extraServices.abonmentWellnessDay"),
+              description: i18next.t("extraServices.abonmentWellnessDayDesc"),
+              price: "2500 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2022/05/IMG_4390.jpeg",
+            },
+            {
+              name: i18next.t("extraServices.spaDayRelaxation"),
+              description: i18next.t("extraServices.spaDayRelaxationDesc"),
+              price: "15 000 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/03/87B0868-_-.jpg",
+            },
           ],
         },
         {
           programName: i18next.t("extraServices.threeDaysPrograms"),
           options: [
-            i18next.t("extraServices.antiStressWeekend"),
-            i18next.t("extraServices.weekendEasternStyle"),
-            i18next.t("extraServices.expressRecoveryOfTheBody"),
-            i18next.t("extraServices.spaDetox"),
-            i18next.t("extraServices.mentalHealth"),
+            {
+              name: i18next.t("extraServices.antiStressWeekend"),
+              description: i18next.t("extraServices.antiStressWeekendDesc"),
+              price: "33 900 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/05/EDEM-med-34.jpg",
+            },
+            {
+              name: i18next.t("extraServices.weekendEasternStyle"),
+              description: i18next.t("extraServices.weekendEasternStyleDesc"),
+              price: "29 900 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2019/04/MIK_8394-1-min.jpg",
+            },
+            {
+              name: i18next.t("extraServices.expressRecoveryOfTheBody"),
+              description: i18next.t(
+                "extraServices.expressRecoveryOfTheBodyDesc",
+              ),
+              price: "27 100 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2019/04/MIK_7618-1-min.jpg",
+            },
+            {
+              name: i18next.t("extraServices.spaDetox"),
+              description: i18next.t("extraServices.spaDetoxDesc"),
+              price: "34 600 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2019/04/DSC_6242-min.jpg",
+            },
+            {
+              name: i18next.t("extraServices.mentalHealth"),
+              description: i18next.t("extraServices.mentalHealthDesc"),
+              price: "63 200 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2022/09/369A8301.jpg",
+            },
           ],
         },
       ],
@@ -56,14 +100,61 @@ export const generateExtraServices = async () => {
       programs: [
         {
           options: [
-            i18next.t("extraServices.detoxNew"),
-            i18next.t("extraServices.productivity"),
-            i18next.t("extraServices.detoxBody"),
-            i18next.t("extraServices.regenerationOfProductivity"),
-            i18next.t("extraServices.recoveryAndDetectionOfDiseaseRisks"),
-            i18next.t("extraServices.detoxBodyAndMind"),
-            i18next.t("extraServices.reEnergy"),
-            i18next.t("extraServices.fitHealth"),
+            {
+              name: i18next.t("extraServices.detoxNew"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+
+            {
+              name: i18next.t("extraServices.productivity"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+            {
+              name: i18next.t("extraServices.detoxBody"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+            {
+              name: i18next.t("extraServices.regenerationOfProductivity"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+
+            {
+              name: i18next.t(
+                "extraServices.recoveryAndDetectionOfDiseaseRisks",
+              ),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+
+            {
+              name: i18next.t("extraServices.detoxBodyAndMind"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+
+            {
+              name: i18next.t("extraServices.reEnergy"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
+
+            {
+              name: i18next.t("extraServices.fitHealth"),
+              description: "",
+              price: "",
+              imageUrl: "",
+            },
           ],
         },
       ],

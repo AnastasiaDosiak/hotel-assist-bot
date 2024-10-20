@@ -33,17 +33,26 @@
   },
   "extraServices": {
     "selectService": "Please, select a service you are interested in to continue.",
-    "selectCategory": "Please, select a category for {{serviceName}} service.",
+    "selectOption": "Selected program is {{programName}}. Select an option to continue",
+    "selectCategory": "Selected service is {{serviceName}}. Select a category to continue",
+    "chosenService": "You have selected {{serviceName}} service",
     "spa": "SPA",
     "oneDayPrograms": "One day programs",
     "abonmentWellnessDay": "Abonment Wellness-Day",
+    "abonmentWellnessDayDesc": "- Access to the SPA area (pool; gym; Roman and Finnish saunas; bathhouse; hammam chairs; hydro massage mini pool; Swiss (circular) shower; Kneipp path; phyto bar). \n - Group fitness classes (Nordic walking, Black Roll training, Aqua aerobics, TRX, Bit Zone, Thai Bo, Fly yoga, Morning exercises).",
     "spaDayRelaxation": "SPA-Day «Relaxation»",
+    "spaDayRelaxationDesc": "SPA Day Relaxation is designed for those who dream of an oasis of peace and long-awaited relaxation. Lymphatic drainage and relaxing techniques, signature Ayurvedic rituals, and aromatherapy will provide rest for your body and soul. The result of this program is the restoration of balance in your body.",
     "threeDaysPrograms": "Three days programs",
     "antiStressWeekend": "Anti-stress Weekend",
+    "antiStressWeekendDesc": "A variety of sensations and flavors for daily relaxation: cleansing and regenerating balneological treatments, SPA rituals, moisturizing mousses, and nourishing components from herbs and spices; exclusive massage techniques and fitness training; dietary nutrition. A reset after stressful weekdays, restoring your body’s strength and energy, and balancing the connection between Body, Mind, and Spirit. The program is designed for men and women who value their time and care about their health.",
     "weekendEasternStyle": "Weekend in Eastern style",
+    "weekendEasternStyleDesc": "A unique journey through the enchanting corners of the Land of Eden, where the richness of sensations, tastes, sounds, and aromas unfolds. We will introduce you to ancient systems of knowledge that promote physical and mental well-being, eliminate stress and depression, and restore your inner Dao. The Eastern-style weekend is a program filled with therapeutic treatments. The light herbal scents of ubtan and oils will bring freshness to every Ayurvedic ritual, acting gently and delicately, resulting in complete relaxation. After these treatments, your skin will be renewed and radiant, smooth and velvety. What’s the secret, you ask? It’s very simple: herbal components, essential oils, extracts, healing muds, and oils activate metabolic processes through contact with the skin, initiating detoxification in the body and improving overall well-being. All procedures in the program are aimed at restoring the body’s natural state of health.",
     "expressRecoveryOfTheBody": "Express recovery of the body",
+    "expressRecoveryOfTheBodyDesc": "Tired of the fast-paced life in the metropolis? Then this program is exactly what you need. It will allow your body to recover in a short period of time. Express procedures are designed to sculpt your body at a rapid pace. A variety of balneological and massage treatments in the Express Body Recovery program will speed up and enhance your body’s regeneration processes, providing strength and energy.",
     "spaDetox": "SPA Detox",
+    "spaDetoxDesc": "The 'SPA Detox' program is a modern express wellness course based on relaxation and cleansing of the body. The program is designed in such a way that you first restore harmony with your inner spiritual world and then activate all your physical strength. You will experience a wellness complex of physiotherapeutic procedures that use water, seaweed, healing peat, and therapeutic essential oils. The three-day 'SPA Detox' program is a unique and natural set of therapeutic and wellness treatments that will initiate detoxification and help you accumulate vital energy. Once you return to your daily life, you will have these valuable insights at your disposal, which you can use for your benefit every day. We guarantee that before you know it, the reflection in the mirror will reveal a transformed person, with new strength and thoughts that can change the course of your life.",
     "mentalHealth": "Mental Health",
+    "mentalHealthDesc": "Each of us strives for harmony of soul and body, preserving inner resources, maintaining productivity, and experiencing happiness in all aspects of life, filling every moment of existence with vibrant emotions. Often, we begin to feel like life is passing us by, our body and mind moving at different speeds, and sometimes we seem to stop and can’t move forward, yet we continue our daily marathon of tasks. These feelings lead to mental and physical exhaustion. The Mental Health program is based on psychotherapeutic techniques, breathing practices, yoga therapy, and restorative body treatments that together achieve a holistic effect. This program restores the balance between the spiritual and the physical, providing an inexhaustible source of energy and a sense of a truly fulfilling life, freeing us from the syndrome of waiting. By going through the program at Edem Clinic, you will experience the authenticity of touch, rediscover your sense of smell, taste, and sound, and perceive the world and yourself in a new way! You will once again feel the strength within you, the desire and energy to fulfill your dreams and reach new heights. Joyfulness, openness, spontaneity, and creativity—you will be filled with them once again!",
     "edemClinic": "Edem Clinic",
     "detoxNew": "Detox New",
     "productivity": "Productivity",
@@ -77,6 +86,8 @@
     "extraCleaning": "Extra cleaning",
     "laundry": "Laundry",
     "transfer": "Transfer",
-    "foodFromRestaurantIntoRoom": "Food from restaurant into room"
+    "foodFromRestaurantIntoRoom": "Food from restaurant into room",
+    "bookThisOption": "Book this option",
+    "backToServices": "Back to services"
   }
 }
