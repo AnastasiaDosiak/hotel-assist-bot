@@ -3,6 +3,7 @@ import { Room } from "../../backend/models/Room";
 import { TSessionData, TUserBookingData } from "../common/types";
 import { DATE_FORMAT } from "../common/constants";
 import i18next from "i18next";
+import { ExtraService } from "../../backend/models/ExtraService";
 
 export const bookRoom = async (roomId: string, userData: TUserBookingData) => {
   const roomToUpdate = await Room.findOne({
@@ -78,4 +79,56 @@ export const gatherBookingData = (chatId: number, session: TSessionData) => {
     startDate: session.checkInDate,
     endDate: session.checkOutDate,
   };
+};
+
+export const bookProgramOption = async (
+  serviceName: string,
+  programName: string,
+  optionName: string,
+  userData: TUserBookingData,
+) => {
+  const serviceToUpdate = await ExtraService.findOne({
+    where: { serviceName },
+  });
+
+  if (serviceToUpdate) {
+    // Extract the current programs and options
+    const programs = serviceToUpdate.getDataValue("programs");
+
+    // Find the specific program
+    const programToUpdate = programs.find(
+      (program: any) => program.programName === programName,
+    );
+
+    if (programToUpdate) {
+      // Find the specific option within the program
+      const optionToUpdate = programToUpdate.options.find(
+        (option: any) => option.name === optionName,
+      );
+
+      if (optionToUpdate) {
+        // Update the 'bookedBy' array for the option by appending the new userData
+        optionToUpdate.bookedBy.push(userData);
+
+        // Save the updated service with the modified option
+        await serviceToUpdate.update({
+          programs: programs,
+        });
+
+        return `Successfully booked option ${optionName} for user ${userData.firstName}`;
+      } else {
+        throw new Error(
+          i18next.t("extraServices.optionNotFound", { optionName }),
+        );
+      }
+    } else {
+      throw new Error(
+        i18next.t("extraServices.programNotFound", { programName }),
+      );
+    }
+  } else {
+    throw new Error(
+      i18next.t("extraServices.serviceNotFound", { serviceName }),
+    );
+  }
 };

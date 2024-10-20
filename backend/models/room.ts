@@ -1,6 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db";
 import { TServiceStatus } from "../common/types";
+import { BookedBy } from "./BookedBy";
 
 export class Room extends Model {
   public id!: string;
@@ -11,14 +12,7 @@ export class Room extends Model {
   public roomNumber!: number;
   public minGuests!: number;
   public maxGuests!: number;
-  public bookedBy!: {
-    userId: string;
-    phone: string;
-    firstName: string;
-    lastName: string;
-    startDate: string;
-    endDate: string;
-  }[];
+  public bookedBy!: BookedBy[];
   public extraServices!: {
     serviceName: string;
     status: TServiceStatus;

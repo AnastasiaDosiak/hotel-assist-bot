@@ -40,6 +40,7 @@ export const generateExtraServices = async () => {
               price: "2500 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2022/05/IMG_4390.jpeg",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.spaDayRelaxation"),
@@ -47,6 +48,7 @@ export const generateExtraServices = async () => {
               price: "15 000 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2018/03/87B0868-_-.jpg",
+              bookedBy: [],
             },
           ],
         },
@@ -59,6 +61,7 @@ export const generateExtraServices = async () => {
               price: "33 900 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2018/05/EDEM-med-34.jpg",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.weekendEasternStyle"),
@@ -66,6 +69,7 @@ export const generateExtraServices = async () => {
               price: "29 900 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2019/04/MIK_8394-1-min.jpg",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.expressRecoveryOfTheBody"),
@@ -75,6 +79,7 @@ export const generateExtraServices = async () => {
               price: "27 100 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2019/04/MIK_7618-1-min.jpg",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.spaDetox"),
@@ -82,6 +87,7 @@ export const generateExtraServices = async () => {
               price: "34 600 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2019/04/DSC_6242-min.jpg",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.mentalHealth"),
@@ -89,6 +95,7 @@ export const generateExtraServices = async () => {
               price: "63 200 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2022/09/369A8301.jpg",
+              bookedBy: [],
             },
           ],
         },
@@ -105,6 +112,7 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
 
             {
@@ -112,18 +120,21 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.detoxBody"),
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.regenerationOfProductivity"),
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
 
             {
@@ -133,6 +144,7 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
 
             {
@@ -140,6 +152,7 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
 
             {
@@ -147,6 +160,7 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
 
             {
@@ -154,6 +168,7 @@ export const generateExtraServices = async () => {
               description: "",
               price: "",
               imageUrl: "",
+              bookedBy: [],
             },
           ],
         },

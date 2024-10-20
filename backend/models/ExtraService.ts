@@ -1,11 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db";
+import { BookedBy } from "./BookedBy";
 
 export class Option extends Model {
   public name!: string;
   public description!: string;
   public price!: string;
   public imageUrl!: string;
+  public bookedBy!: BookedBy[];
 }
 
 export class Program extends Model {

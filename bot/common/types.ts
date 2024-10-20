@@ -18,6 +18,8 @@ export type TSessionData = {
   availableRoomId: string;
   roomIndex: number;
   programName: string;
+  serviceName: string;
+  option: string;
 };
 
 export type TUserSession = {

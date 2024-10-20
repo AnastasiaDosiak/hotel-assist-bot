@@ -1,6 +1,10 @@
 import { CallbackHandlersMap } from "../common/types";
 import { handleSelectProgram } from "./programHandlers";
-import { handleBookRoom, handleContinueReservation } from "./bookingHandlers";
+import {
+  handleBookOption,
+  handleBookRoom,
+  handleContinueReservation,
+} from "./bookingHandlers";
 import { handleSeeOtherRooms } from "./roomHandlers";
 import { handleSelectService } from "./serviceHandlers";
 import { handleSelectOption } from "./optionHandler";
@@ -15,6 +19,7 @@ const callbackHandlers: CallbackHandlersMap = {
   select_program_: handleSelectProgram,
   select_option_: handleSelectOption,
   back_to_services: backToServices,
+  book_option_: handleBookOption,
 };
 
 export default callbackHandlers;

@@ -88,6 +88,9 @@
     "transfer": "Transfer",
     "foodFromRestaurantIntoRoom": "Food from restaurant into room",
     "bookThisOption": "Book this option",
-    "backToServices": "Back to services"
+    "backToServices": "Back to services",
+    "optionNotFound": "Option {{optionName}} was not found.",
+    "programNotFound": "Program {{programNotFound}} was not found.",
+    "serviceNotFound": "Service {{serviceNotFound}} was not found."
   }
 }

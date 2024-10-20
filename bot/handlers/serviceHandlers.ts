@@ -1,13 +1,18 @@
 import i18next from "i18next";
 import TelegramBot from "node-telegram-bot-api";
 import { ExtraService } from "../../backend/models/ExtraService";
-import { CallbackHandler } from "../common/types";
+import { CallbackHandler, TSessionData, TUserSession } from "../common/types";
 import { createKeyboardOptions } from "../common/utils";
 
 // Handler for service selection
-export const handleSelectService: CallbackHandler = ({ bot, chatId, data }) => {
+export const handleSelectService: CallbackHandler = ({
+  bot,
+  chatId,
+  data,
+  userSessions,
+}) => {
   const serviceName = data.replace("select_service_", "");
-  handleServiceCategory(bot, chatId, serviceName);
+  handleServiceCategory(bot, chatId, serviceName, userSessions);
 };
 
 export const handleExtraServices = async (bot: TelegramBot, chatId: number) => {
@@ -30,8 +35,12 @@ export const handleServiceCategory = async (
   bot: TelegramBot,
   chatId: number,
   serviceName: string,
+  userSessions: TUserSession,
 ) => {
   const service = await ExtraService.findOne({ where: { serviceName } });
+  userSessions[chatId] = {
+    serviceName,
+  } as TSessionData;
   if (service) {
     const categories = service.programs.map((program) => [
       {

@@ -38,3 +38,18 @@ export const handleContinueReservation: CallbackHandler = ({
     bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
   }
 };
+
+export const handleBookOption: CallbackHandler = ({
+  bot,
+  chatId,
+  data,
+  userSessions,
+}) => {
+  if (userSessions) {
+    // TODO: add some logic here
+    // const nextAvailableDate = data.split("_")[2];
+    // userSessions[chatId].checkInDate = nextAvailableDate;
+    // userSessions[chatId].bookingstage = "awaiting_checkout_date";
+    // bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
+  }
+};
