@@ -39,8 +39,10 @@ export const handleServiceCategory = async (
 ) => {
   const service = await ExtraService.findOne({ where: { serviceName } });
   userSessions[chatId] = {
+    ...userSessions[chatId],
     serviceName,
   } as TSessionData;
+
   if (service) {
     const categories = service.programs.map((program) => [
       {
@@ -48,7 +50,9 @@ export const handleServiceCategory = async (
         callback_data: `select_program_${program.programName}`,
       },
     ]);
-    bot.sendMessage(
+
+    categories.push([{ text: "Back", callback_data: "back_to_services" }]);
+    await bot.sendMessage(
       chatId,
       i18next.t("extraServices.selectCategory", { serviceName }),
       {

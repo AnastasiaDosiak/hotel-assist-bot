@@ -1,11 +1,13 @@
 import TelegramBot from "node-telegram-bot-api";
-import { TRoomType, TSessionData, TUserSession } from "../../common/types";
+import { TRoomType, TUserSession } from "../../common/types";
 import { setupStep } from "./setupStep";
 import { checkInStep } from "./checkInStep";
 import { checkoutWaitingStep } from "./checkoutWaitingStep";
 import { firstNameStep } from "./firstNameStep";
 import { lastNameStep } from "./lastNameStep";
 import { confirmStep } from "./confirmStep";
+import { servicesCheckinStep } from "./servicesCheckinStep";
+import { confirmOptionStep } from "../confirmOptionHandler";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -15,7 +17,7 @@ export const handleTextMessage = (
   setCurrentRoomIndex: (index: number) => number,
 ) => {
   const chatId = msg.chat.id;
-  const session = userSessions[chatId] as TSessionData;
+  const session = userSessions[chatId];
   const commonStepParams = {
     msg,
     bot,
@@ -25,17 +27,30 @@ export const handleTextMessage = (
   };
   setupStep(commonStepParams);
 
-  if (session && session.bookingstage) {
-    if (session.bookingstage === "awaiting_checkin_date") {
-      checkInStep(commonStepParams);
-    } else if (session.bookingstage === "awaiting_checkout_date") {
-      checkoutWaitingStep(commonStepParams);
-    } else if (session.bookingstage === "awaiting_first_name") {
-      firstNameStep(commonStepParams);
-    } else if (session.bookingstage === "awaiting_last_name") {
-      lastNameStep(commonStepParams);
-    } else if (session.bookingstage === "check_availability") {
-      confirmStep(commonStepParams);
+  if (session) {
+    if (session.roomBookingStage) {
+      if (session.roomBookingStage === "awaiting_checkin_date") {
+        checkInStep(commonStepParams);
+      } else if (session.roomBookingStage === "awaiting_checkout_date") {
+        checkoutWaitingStep(commonStepParams);
+      } else if (session.roomBookingStage === "awaiting_first_name") {
+        firstNameStep(commonStepParams, "roomBookingStage");
+      } else if (session.roomBookingStage === "awaiting_last_name") {
+        lastNameStep(commonStepParams, "roomBookingStage");
+      } else if (session.roomBookingStage === "confirm_step") {
+        confirmStep(commonStepParams);
+      }
+    }
+    if (session.serviceBookingStage) {
+      if (session.serviceBookingStage === "awaiting_checkin_date") {
+        servicesCheckinStep(commonStepParams);
+      } else if (session.serviceBookingStage === "awaiting_first_name") {
+        firstNameStep(commonStepParams, "serviceBookingStage");
+      } else if (session.serviceBookingStage === "awaiting_last_name") {
+        lastNameStep(commonStepParams, "serviceBookingStage");
+      } else if (session.serviceBookingStage === "confirm_step") {
+        confirmOptionStep(commonStepParams);
+      }
     }
   }
 };

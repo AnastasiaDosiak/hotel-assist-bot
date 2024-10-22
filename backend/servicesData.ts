@@ -40,7 +40,20 @@ export const generateExtraServices = async () => {
               price: "2500 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2022/05/IMG_4390.jpeg",
-              bookedBy: [],
+              bookedBy: [
+                {
+                  userId: "userId",
+                  phone: "380959272623",
+                  startDate: "24/10/2024",
+                  endDate: "24/10/2024",
+                  serviceName: "SPA",
+                  programName: "One day programs",
+                  option: "Abonment Wellness-Day",
+                  serviceBookingStage: "check_availability",
+                  firstName: "dsa",
+                  lastName: "dsa",
+                },
+              ],
             },
             {
               name: i18next.t("extraServices.spaDayRelaxation"),
@@ -61,7 +74,20 @@ export const generateExtraServices = async () => {
               price: "33 900 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2018/05/EDEM-med-34.jpg",
-              bookedBy: [],
+              bookedBy: [
+                {
+                  userId: "userId",
+                  phone: "380959272623",
+                  startDate: "24/10/2024",
+                  endDate: "27/10/2024",
+                  serviceName: "SPA",
+                  programName: "One day programs",
+                  option: "Abonment Wellness-Day",
+                  serviceBookingStage: "check_availability",
+                  firstName: "mommy",
+                  lastName: "dsmamaa",
+                },
+              ],
             },
             {
               name: i18next.t("extraServices.weekendEasternStyle"),

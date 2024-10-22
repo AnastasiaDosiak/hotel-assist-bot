@@ -4,6 +4,7 @@ import {
   handleBookOption,
   handleBookRoom,
   handleContinueReservation,
+  handleContinueReservationOption,
 } from "./bookingHandlers";
 import { handleSeeOtherRooms } from "./roomHandlers";
 import { handleSelectService } from "./serviceHandlers";
@@ -15,6 +16,7 @@ const callbackHandlers: CallbackHandlersMap = {
   select_service_: handleSelectService,
   book_room_type_: handleBookRoom,
   continue_reservation_: handleContinueReservation,
+  continue_reserve_option_: handleContinueReservationOption,
   see_other_rooms: handleSeeOtherRooms,
   select_program_: handleSelectProgram,
   select_option_: handleSelectOption,

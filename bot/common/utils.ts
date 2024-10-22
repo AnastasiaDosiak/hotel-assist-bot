@@ -2,14 +2,23 @@ import dayjs from "dayjs";
 import { DATE_FORMAT } from "./constants";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { OptionsType, TSessionData } from "./types";
-import { ExtraService } from "../../backend/models/ExtraService";
+import { ExtraService, Program } from "../../backend/models/ExtraService";
+dayjs.extend(customParseFormat);
 
 export const isValidDate = (dateString: string) => {
-  dayjs.extend(customParseFormat);
-  const parsedDate = dayjs(dateString, DATE_FORMAT, true);
+  const parsedDate = parseDate(dateString);
   return parsedDate.isValid() && parsedDate.isAfter(dayjs());
 };
 
+export const parseDate = (dateString: string) => {
+  const parsedDate = dayjs(dateString, DATE_FORMAT, true);
+  return parsedDate;
+};
+
+export const formatDate = (date: Date) => {
+  const formatDate = dayjs(date).format(DATE_FORMAT);
+  return formatDate;
+};
 // Function to calculate the difference in days using dayjs
 export const getDifferenceInDays = (
   checkInDate: string,
@@ -31,7 +40,7 @@ export const isCheckoutDateValid = (
 };
 
 export const resetSession = (session: TSessionData) => {
-  session.bookingstage = "";
+  session.roomBookingStage = "";
   session.availableRoomId = "";
   session.checkInDate = "";
   session.checkOutDate = "";
@@ -40,6 +49,10 @@ export const resetSession = (session: TSessionData) => {
   session.phone = "";
   session.roomIndex = 0;
   session.roomType = "";
+  session.option = "";
+  session.programName = "";
+  session.serviceName = "";
+  session.serviceBookingStage = "";
 };
 
 export const getProgramOptions = async (programName: string) => {
@@ -51,7 +64,11 @@ export const getProgramOptions = async (programName: string) => {
         .map((program) => program.options),
     )[0] || [];
 
-  return programOptions;
+  if (programOptions) {
+    return programOptions;
+  }
+
+  return null;
 };
 
 export const getOptionDetails = async (
@@ -59,7 +76,7 @@ export const getOptionDetails = async (
   optionName: string,
 ) => {
   const programOptions = await getProgramOptions(programName);
-  const option = programOptions.find((option) => option.name === optionName);
+  const option = programOptions?.find((option) => option.name === optionName);
   return option;
 };
 
@@ -78,3 +95,19 @@ export const createKeyboardOptions = <T extends Record<string, any>>(
 
   return keyboardOptions;
 };
+
+export const addThreeDaysToDate = (date: string) => {
+  const parsedDate = parseDate(date);
+  return dayjs(parsedDate).add(3, "day");
+};
+
+// Sort the `updatedPrograms` array based on the order defined in the original `programs` array.
+export const sortPrograms = (
+  updatedPrograms: Program[],
+  programOrderMap: Map<string, number>,
+) =>
+  updatedPrograms.sort((a: Program, b: Program) => {
+    const indexA = programOrderMap.get(a.id) ?? -1;
+    const indexB = programOrderMap.get(b.id) ?? -1;
+    return indexA - indexB;
+  });

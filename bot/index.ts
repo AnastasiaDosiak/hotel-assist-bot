@@ -41,8 +41,8 @@ bot.on("text", (msg) => {
   // clear the session so user can start a new booking
   if (
     userSessions[msg.chat.id] &&
-    userSessions[msg.chat.id].bookingstage &&
-    userSessions[msg.chat.id].bookingstage === "booking_completed"
+    userSessions[msg.chat.id].roomBookingStage &&
+    userSessions[msg.chat.id].roomBookingStage === "booking_completed"
   ) {
     userSessions[msg.chat.id] = {} as TSessionData;
   }

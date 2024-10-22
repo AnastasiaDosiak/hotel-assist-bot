@@ -19,7 +19,9 @@ export const handleOptionSelection = async (
   optionName: string,
   userSessions: TUserSession,
 ) => {
-  const programName = userSessions[chatId].programName;
+  const session = userSessions[chatId];
+  const programName = session.programName;
+  session.option = optionName;
   const optionDetails = await getOptionDetails(programName, optionName);
   const keyboardOptions = [
     [

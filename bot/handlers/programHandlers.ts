@@ -21,6 +21,7 @@ export const handleProgramSelection = async (
   userSessions: TUserSession,
 ) => {
   userSessions[chatId] = {
+    ...userSessions[chatId],
     programName,
   } as TSessionData;
   const programWithOptions = await getProgramOptions(programName);

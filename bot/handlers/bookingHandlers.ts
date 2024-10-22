@@ -1,5 +1,7 @@
+import { isOneDayProgram } from "./../common/constants";
 import i18next from "i18next";
 import { CallbackHandler, TSessionData } from "../common/types";
+import { addThreeDaysToDate, formatDate } from "../common/utils";
 
 // Handler for room booking
 export const handleBookRoom: CallbackHandler = async ({
@@ -11,7 +13,8 @@ export const handleBookRoom: CallbackHandler = async ({
 }) => {
   if (userSessions && message) {
     userSessions[chatId] = {
-      bookingstage: "awaiting_checkin_date",
+      ...userSessions[chatId],
+      roomBookingStage: "awaiting_checkin_date",
       roomIndex: currentRoomIndex,
     } as TSessionData;
 
@@ -32,24 +35,57 @@ export const handleContinueReservation: CallbackHandler = ({
   userSessions,
 }) => {
   if (userSessions) {
+    const session = userSessions[chatId];
     const nextAvailableDate = data.split("_")[2];
-    userSessions[chatId].checkInDate = nextAvailableDate;
-    userSessions[chatId].bookingstage = "awaiting_checkout_date";
+    session.checkInDate = nextAvailableDate;
+    session.roomBookingStage = "awaiting_checkout_date";
     bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
   }
 };
 
-export const handleBookOption: CallbackHandler = ({
+export const handleBookOption: CallbackHandler = async ({
+  bot,
+  chatId,
+  userSessions,
+}) => {
+  if (userSessions) {
+    const session = userSessions[chatId];
+    const optionName = session.option;
+    const isOneDayProgram =
+      session.programName === i18next.t("extraServices.oneDayPrograms");
+    userSessions[chatId] = {
+      ...userSessions[chatId],
+      serviceBookingStage: "awaiting_checkin_date",
+    };
+
+    if (isOneDayProgram) {
+      await bot.sendMessage(
+        chatId,
+        i18next.t("extraServices.oneDayProgramsDate", { optionName }),
+      );
+    } else {
+      await bot.sendMessage(
+        chatId,
+        i18next.t("extraServices.threeDaysProgramsCheckIn", { optionName }),
+      );
+    }
+  }
+};
+
+export const handleContinueReservationOption: CallbackHandler = ({
   bot,
   chatId,
   data,
   userSessions,
 }) => {
   if (userSessions) {
-    // TODO: add some logic here
-    // const nextAvailableDate = data.split("_")[2];
-    // userSessions[chatId].checkInDate = nextAvailableDate;
-    // userSessions[chatId].bookingstage = "awaiting_checkout_date";
-    // bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
+    const session = userSessions[chatId];
+    const nextAvailableDate = data.split("_")[3];
+    session.serviceBookingStage = "awaiting_first_name";
+    session.checkInDate = nextAvailableDate;
+    session.checkOutDate = isOneDayProgram(session.programName)
+      ? nextAvailableDate
+      : formatDate(addThreeDaysToDate(nextAvailableDate).toDate());
+    bot.sendMessage(chatId, i18next.t("enterFirstName"));
   }
 };

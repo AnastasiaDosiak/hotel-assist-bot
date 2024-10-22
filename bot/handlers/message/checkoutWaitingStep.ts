@@ -10,21 +10,19 @@ import { CommonStepParams } from "../../common/types";
 
 export const checkoutWaitingStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session } = props;
+  const { checkInDate, checkOutDate } = session;
   const chatId = msg.chat.id;
   if (!isValidDate(msg.text!)) {
-    bot.sendMessage(chatId, i18next.t("bookingProcess.invalidDateFormat"));
+    bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
   } else if (!isCheckoutDateValid(session.checkInDate, msg.text!)) {
-    bot.sendMessage(
-      msg.chat.id,
-      i18next.t("bookingProcess.checkoutEarlierThanCheckin"),
-    );
+    bot.sendMessage(msg.chat.id, i18next.t("checkoutEarlierThanCheckin"));
   } else {
     session.checkOutDate = msg.text!;
     const currentRoomTypeIndex = session.roomIndex;
     const roomType = rooms[currentRoomTypeIndex].type;
 
     // Perform the room availability check once after both dates are entered
-    checkRoomAvailability(roomType, session.checkInDate, session.checkOutDate)
+    checkRoomAvailability(roomType, checkInDate, checkOutDate)
       .then((response) => {
         if (typeof response === "string") {
           // If room is unavailable, send options to the user
@@ -55,8 +53,8 @@ export const checkoutWaitingStep = (props: CommonStepParams) => {
         } else if (response) {
           // If room is available, proceed with gathering user details
           session.availableRoomId = response.id; // Store available room id in the session
-          session.bookingstage = "awaiting_first_name";
-          bot.sendMessage(chatId, i18next.t("bookingProcess.enterFirstName"));
+          session.roomBookingStage = "awaiting_first_name";
+          bot.sendMessage(chatId, i18next.t("enterFirstName"));
         } else {
           console.log("response: ", response);
           resetSession(session);

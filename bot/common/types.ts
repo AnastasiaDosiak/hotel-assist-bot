@@ -8,7 +8,7 @@ export type TRoomType = {
 };
 
 export type TSessionData = {
-  bookingstage: string;
+  roomBookingStage: string;
   checkInDate: string;
   checkOutDate: string;
   firstName: string;
@@ -20,6 +20,7 @@ export type TSessionData = {
   programName: string;
   serviceName: string;
   option: string;
+  serviceBookingStage: string;
 };
 
 export type TUserSession = {
