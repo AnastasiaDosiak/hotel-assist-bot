@@ -1,14 +1,15 @@
 import { CallbackHandlersMap } from "../common/types";
-import { handleSelectProgram } from "./programHandlers";
+import { handleSelectSpaProgram } from "./programHandlers";
 import {
-  handleBookOption,
+  handleBookSpaOption,
   handleBookRoom,
   handleContinueReservation,
   handleContinueReservationOption,
+  handleBookOption,
 } from "./bookingHandlers";
 import { handleSeeOtherRooms } from "./roomHandlers";
 import { handleSelectService } from "./serviceHandlers";
-import { handleSelectOption } from "./optionHandler";
+import { handleSelectOption, handleSelectSpaOption } from "./optionHandler";
 import { backToServices } from "./backToServicesHandler";
 
 // Mapping handlers based on specific prefixes
@@ -18,9 +19,11 @@ const callbackHandlers: CallbackHandlersMap = {
   continue_reservation_: handleContinueReservation,
   continue_reserve_option_: handleContinueReservationOption,
   see_other_rooms: handleSeeOtherRooms,
-  select_program_: handleSelectProgram,
-  select_option_: handleSelectOption,
+  select_spa_program_: handleSelectSpaProgram,
+  select_spa_option_: handleSelectSpaOption,
   back_to_services: backToServices,
+  book_spa_option_: handleBookSpaOption,
+  select_option_: handleSelectOption,
   book_option_: handleBookOption,
 };
 

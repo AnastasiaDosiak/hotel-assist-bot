@@ -7,6 +7,7 @@ export class Option extends Model {
   public description!: string;
   public price!: string;
   public imageUrl!: string;
+  public duration?: number;
   public bookedBy!: BookedBy[];
 }
 

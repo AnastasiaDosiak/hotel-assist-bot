@@ -1,13 +1,16 @@
 import dayjs from "dayjs";
 import { Room } from "../../backend/models/Room";
-import { Option, Program } from "../../backend/models/ExtraService";
+import {
+  Option,
+  Program,
+  ExtraService,
+} from "../../backend/models/ExtraService";
 import { TSessionData, TUserBookingData } from "../common/types";
 import { DATE_FORMAT, isOneDayProgram } from "../common/constants";
 import i18next from "i18next";
-import { ExtraService } from "../../backend/models/ExtraService";
 import {
   addThreeDaysToDate,
-  getOptionDetails,
+  getSpaOptionDetails,
   sortPrograms,
 } from "../common/utils";
 
@@ -78,6 +81,62 @@ export const checkRoomAvailability = async (
 
 export const checkOptionAvailability = async (
   serviceName: string,
+  optionName: string,
+  checkInDate: string,
+  checkOutDate: string,
+): Promise<Option | string | null> => {
+  const checkIn = dayjs(checkInDate, DATE_FORMAT).toDate();
+  const checkOut = dayjs(checkOutDate, DATE_FORMAT).toDate();
+
+  const service = await ExtraService.findOne({
+    where: { serviceName },
+  });
+
+  const programs = service?.getDataValue("programs");
+
+  const option =
+    programs
+      .flatMap((program: Program) => program.options)
+      .find((option: Option) => {
+        return option.name === optionName;
+      }) || null;
+
+  let earliestAvailableDate: Date | null = null;
+
+  const isAvailable = option.bookedBy.every((booking: TUserBookingData) => {
+    const bookedCheckIn = dayjs(booking.startDate, DATE_FORMAT).toDate();
+    const bookedCheckOut = dayjs(booking.endDate, DATE_FORMAT).toDate();
+    console.log(bookedCheckIn, "bookedCheckIn");
+    const isConflict =
+      (checkIn < bookedCheckOut && checkOut > bookedCheckIn) || // Overlap in booking
+      checkIn.getTime() === bookedCheckIn.getTime(); // Exact start date conflict
+    console.log(isConflict, "isConflict");
+
+    if (isConflict) {
+      if (!earliestAvailableDate || bookedCheckOut > earliestAvailableDate) {
+        earliestAvailableDate = bookedCheckOut;
+      }
+    }
+    console.log(isConflict, "isConflict");
+    return !isConflict;
+  });
+
+  if (isAvailable) {
+    return option;
+  }
+  if (earliestAvailableDate) {
+    const nextAvailableDate = dayjs(earliestAvailableDate).format(DATE_FORMAT);
+    return i18next.t("extraServices.optionNotFound", {
+      optionName,
+      nextAvailableDate,
+    });
+  }
+
+  return null;
+};
+
+export const checkSpaOptionAvailability = async (
+  serviceName: string,
   checkInDate: string,
   programName: string,
   optionName: string,
@@ -86,7 +145,7 @@ export const checkOptionAvailability = async (
   const checkOut = isOneDayProgram(programName)
     ? checkIn
     : addThreeDaysToDate(checkInDate).toDate();
-  const optionDetails = await getOptionDetails(programName, optionName);
+  const optionDetails = await getSpaOptionDetails(programName, optionName);
   let earliestAvailableDate: Date | null = null;
 
   const isAvailable = optionDetails?.bookedBy.every(
@@ -139,7 +198,7 @@ export const gatherBookingData = (chatId: number, session: TSessionData) => {
   };
 };
 
-export const bookProgramOption = async (
+export const bookSpaProgramOption = async (
   serviceName: string,
   programName: string,
   optionName: string,
@@ -201,4 +260,71 @@ export const bookProgramOption = async (
       i18next.t("extraServices.serviceNotFound", { serviceName }),
     );
   }
+};
+
+export const bookProgramOption = async (
+  serviceName: string,
+  programName: string,
+  optionName: string,
+  userData: TUserBookingData,
+) => {
+  const serviceToUpdate = await ExtraService.findOne({
+    where: { serviceName },
+  });
+
+  if (!serviceToUpdate) {
+    throw new Error(
+      i18next.t("extraServices.serviceNotFound", { serviceName }),
+    );
+  }
+
+  // Extract the current programs and options
+  const programs = serviceToUpdate.getDataValue("programs");
+
+  // Find the specific program containing the option
+  const programToUpdate = programs.find((program: Program) =>
+    program.options.some((option: Option) => option.name === optionName),
+  );
+
+  if (!programToUpdate) {
+    throw new Error(
+      i18next.t("extraServices.programNotFound", { programName }),
+    );
+  }
+
+  // Find the specific option within the program
+  const optionToUpdate = programToUpdate.options.find(
+    (option: Option) => option.name === optionName,
+  );
+
+  if (!optionToUpdate) {
+    throw new Error(i18next.t("extraServices.optionNotFound", { optionName }));
+  }
+
+  // Update the 'bookedBy' array for the option by appending the new userData
+  optionToUpdate.bookedBy.push(userData);
+
+  // Create a new program object that reflects the update
+  const updatedProgram = {
+    ...programToUpdate,
+    options: programToUpdate.options.map((option: Option) =>
+      option.name === optionName ? optionToUpdate : option,
+    ), // Ensure options are updated in the same order
+  };
+
+  // Update the programs array with the updated program
+  const updatedPrograms = programs.map((program: Program) =>
+    program.programName === programName ? updatedProgram : program,
+  );
+
+  // Set the new programs array in the serviceToUpdate object
+  serviceToUpdate.setDataValue("programs", updatedPrograms);
+
+  // Mark the programs field as changed to ensure Sequelize updates it
+  serviceToUpdate.changed("programs", true);
+
+  // Save the updated service with the modified programs array
+  await serviceToUpdate.save();
+
+  return optionToUpdate;
 };

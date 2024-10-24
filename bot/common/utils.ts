@@ -3,6 +3,7 @@ import { DATE_FORMAT } from "./constants";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { OptionsType, TSessionData } from "./types";
 import { ExtraService, Program } from "../../backend/models/ExtraService";
+import i18next from "i18next";
 dayjs.extend(customParseFormat);
 
 export const isValidDate = (dateString: string) => {
@@ -71,7 +72,25 @@ export const getProgramOptions = async (programName: string) => {
   return null;
 };
 
-export const getOptionDetails = async (
+export const findOptionByName = async (optionName: string) => {
+  const services = await ExtraService.findAll();
+
+  for (const service of services) {
+    for (const program of service.programs) {
+      const option = program.options.find(
+        (option) => option.name === optionName,
+      );
+
+      if (option) {
+        return option;
+      }
+    }
+  }
+
+  return null;
+};
+
+export const getSpaOptionDetails = async (
   programName: string,
   optionName: string,
 ) => {
@@ -101,6 +120,11 @@ export const addThreeDaysToDate = (date: string) => {
   return dayjs(parsedDate).add(3, "day");
 };
 
+export const addDaysToStartDate = (date: string, addingDays: number) => {
+  const parsedDate = parseDate(date);
+  return dayjs(parsedDate).add(addingDays, "day");
+};
+
 // Sort the `updatedPrograms` array based on the order defined in the original `programs` array.
 export const sortPrograms = (
   updatedPrograms: Program[],
@@ -111,3 +135,6 @@ export const sortPrograms = (
     const indexB = programOrderMap.get(b.id) ?? -1;
     return indexA - indexB;
   });
+
+export const isSpaService = (serviceName: string) =>
+  serviceName === i18next.t("extraServices.spa");

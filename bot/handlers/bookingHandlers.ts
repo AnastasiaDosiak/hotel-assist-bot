@@ -23,7 +23,30 @@ export const handleBookRoom: CallbackHandler = async ({
       { inline_keyboard: [] },
       { chat_id: chatId, message_id: message.message_id },
     );
-    await bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckInDate"));
+    await bot.sendMessage(chatId, i18next.t("enterCheckInDate"));
+  }
+};
+
+export const handleBookOption: CallbackHandler = async ({
+  bot,
+  chatId,
+  userSessions,
+  message,
+  currentRoomIndex,
+}) => {
+  if (userSessions && message) {
+    userSessions[chatId] = {
+      ...userSessions[chatId],
+      serviceBookingStage: "awaiting_checkin_date",
+      roomIndex: currentRoomIndex,
+    } as TSessionData;
+
+    // Disable the buttons after room selection
+    await bot.editMessageReplyMarkup(
+      { inline_keyboard: [] },
+      { chat_id: chatId, message_id: message.message_id },
+    );
+    await bot.sendMessage(chatId, i18next.t("enterCheckInDate"));
   }
 };
 
@@ -39,11 +62,11 @@ export const handleContinueReservation: CallbackHandler = ({
     const nextAvailableDate = data.split("_")[2];
     session.checkInDate = nextAvailableDate;
     session.roomBookingStage = "awaiting_checkout_date";
-    bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
+    bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
   }
 };
 
-export const handleBookOption: CallbackHandler = async ({
+export const handleBookSpaOption: CallbackHandler = async ({
   bot,
   chatId,
   userSessions,

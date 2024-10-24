@@ -4,13 +4,13 @@ import { CallbackHandler, TSessionData, TUserSession } from "../common/types";
 import { createKeyboardOptions, getProgramOptions } from "../common/utils";
 
 // Handler for program selection
-export const handleSelectProgram: CallbackHandler = ({
+export const handleSelectSpaProgram: CallbackHandler = ({
   bot,
   chatId,
   data,
   userSessions,
 }) => {
-  const programName = data.replace("select_program_", "");
+  const programName = data.replace("select_spa_program_", "");
   handleProgramSelection(bot, chatId, programName, userSessions);
 };
 
@@ -29,13 +29,13 @@ export const handleProgramSelection = async (
   if (programWithOptions) {
     const keyboardOptions = createKeyboardOptions(
       programWithOptions,
-      "select_option_",
+      "select_spa_option_",
       "name",
     );
 
     bot.sendMessage(
       chatId,
-      i18next.t("extraServices.selectOption", { programName }),
+      i18next.t("extraServices.selectOptionSpa", { programName }),
       {
         reply_markup: {
           resize_keyboard: true,

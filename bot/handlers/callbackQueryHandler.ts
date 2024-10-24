@@ -66,8 +66,9 @@ export const handleCallbackQuery = (
     );
   } else if (
     data.includes("select_service_") ||
+    data.includes("select_spa_option_") ||
+    data.includes("select_spa_program_") ||
     data.includes("select_option_") ||
-    data.includes("select_program_") ||
     data.includes("back_to_services")
   ) {
     bot.editMessageReplyMarkup(

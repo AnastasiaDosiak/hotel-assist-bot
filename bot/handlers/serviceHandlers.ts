@@ -2,7 +2,7 @@ import i18next from "i18next";
 import TelegramBot from "node-telegram-bot-api";
 import { ExtraService } from "../../backend/models/ExtraService";
 import { CallbackHandler, TSessionData, TUserSession } from "../common/types";
-import { createKeyboardOptions } from "../common/utils";
+import { createKeyboardOptions, isSpaService } from "../common/utils";
 
 // Handler for service selection
 export const handleSelectService: CallbackHandler = ({
@@ -43,24 +43,48 @@ export const handleServiceCategory = async (
     serviceName,
   } as TSessionData;
 
-  if (service) {
-    const categories = service.programs.map((program) => [
-      {
-        text: program.programName,
-        callback_data: `select_program_${program.programName}`,
-      },
-    ]);
-
-    categories.push([{ text: "Back", callback_data: "back_to_services" }]);
-    await bot.sendMessage(
-      chatId,
-      i18next.t("extraServices.selectCategory", { serviceName }),
-      {
-        reply_markup: {
-          resize_keyboard: true,
-          inline_keyboard: categories,
+  if (service && serviceName) {
+    let categories = [] as { text: string; callback_data: string }[][];
+    if (isSpaService(serviceName)) {
+      categories = service.programs.map((program) => [
+        {
+          text: program.programName,
+          callback_data: `select_spa_program_${program.programName}`,
         },
-      },
-    );
+      ]);
+    } else {
+      categories = service.programs.flatMap((program) =>
+        program.options.map((option) => [
+          {
+            text: option.name,
+            callback_data: `select_option_${option.name}`,
+          },
+        ]),
+      );
+    }
+
+    if (isSpaService(serviceName)) {
+      await bot.sendMessage(
+        chatId,
+        i18next.t("extraServices.selectCategory", { serviceName }),
+        {
+          reply_markup: {
+            resize_keyboard: true,
+            inline_keyboard: categories,
+          },
+        },
+      );
+    } else {
+      await bot.sendMessage(
+        chatId,
+        i18next.t("extraServices.selectOption", { serviceName }),
+        {
+          reply_markup: {
+            resize_keyboard: true,
+            inline_keyboard: categories,
+          },
+        },
+      );
+    }
   }
 };

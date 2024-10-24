@@ -1,8 +1,13 @@
 import i18next from "i18next";
 import { CommonStepParams } from "../common/types";
-import { getOptionDetails, resetSession } from "../common/utils";
+import {
+  getSpaOptionDetails,
+  isSpaService,
+  resetSession,
+} from "../common/utils";
 import {
   gatherBookingData,
+  bookSpaProgramOption,
   bookProgramOption,
 } from "../services/bookingService";
 
@@ -23,7 +28,7 @@ export const confirmOptionStep = async (props: CommonStepParams) => {
       one_time_keyboard: false,
     },
   };
-  // Retrieve the available room that was checked earlier
+
   const {
     serviceName,
     option,
@@ -38,16 +43,44 @@ export const confirmOptionStep = async (props: CommonStepParams) => {
   if (serviceName) {
     const bookingData = gatherBookingData(chatId, session);
 
-    bookProgramOption(serviceName, programName, option, bookingData)
-      .then(() => {
-        getOptionDetails(programName, option).then(async (response) => {
+    if (isSpaService(serviceName)) {
+      bookSpaProgramOption(serviceName, programName, option, bookingData)
+        .then(() => {
+          getSpaOptionDetails(programName, option).then(async (response) => {
+            await bot.sendMessage(
+              chatId,
+              i18next.t("extraServices.bookingOptionConfirmation", {
+                optionName: option,
+                checkIn: checkInDate,
+                checkOut: checkOutDate,
+                totalPrice: response?.price,
+                firstName,
+                lastName,
+                phone,
+              }),
+              options,
+            );
+            resetSession(session);
+          });
+        })
+        .catch((error) => {
+          bot.sendMessage(
+            chatId,
+            i18next.t("extraServices.bookingOptionError"),
+          );
+          console.error(error);
+        });
+    } else {
+      bookProgramOption(serviceName, programName, option, bookingData).then(
+        async (res) => {
+          console.log(res, 'res in book option')
           await bot.sendMessage(
             chatId,
             i18next.t("extraServices.bookingOptionConfirmation", {
               optionName: option,
               checkIn: checkInDate,
               checkOut: checkOutDate,
-              totalPrice: response?.price,
+              totalPrice: res?.price,
               firstName,
               lastName,
               phone,
@@ -55,12 +88,9 @@ export const confirmOptionStep = async (props: CommonStepParams) => {
             options,
           );
           resetSession(session);
-        });
-      })
-      .catch((error) => {
-        bot.sendMessage(chatId, i18next.t("extraServices.bookingOptionError"));
-        console.error(error);
-      });
+        },
+      );
+    }
   } else {
     bot.sendMessage(chatId, i18next.t("extraServices.noOptionsAvailable"));
     console.error("No available options found in session");

@@ -135,65 +135,71 @@ export const generateExtraServices = async () => {
           options: [
             {
               name: i18next.t("extraServices.detoxNew"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t("extraServices.detoxNewDescription"), //detoxNewDescription
+              duration: 7,
+              price: "126 243 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/02/IMG_2447-1.jpg",
               bookedBy: [],
             },
-
             {
               name: i18next.t("extraServices.productivity"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t("extraServices.productivityDescription"),
+              price: "52 300 UAH",
+              duration: 3,
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2022/08/191.jpg",
               bookedBy: [],
             },
             {
               name: i18next.t("extraServices.detoxBody"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t("extraServices.detoxBodyDescription"),
+              price: "49 558 UAH",
+              duration: 3,
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2022/06/beaty-medicine-45.jpg",
               bookedBy: [],
             },
-            {
-              name: i18next.t("extraServices.regenerationOfProductivity"),
-              description: "",
-              price: "",
-              imageUrl: "",
-              bookedBy: [],
-            },
-
             {
               name: i18next.t(
                 "extraServices.recoveryAndDetectionOfDiseaseRisks",
               ),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t(
+                "extraServices.recoveryAndDetectionOfDiseaseRisksDescription",
+              ),
+              duration: 7,
+              price: "125 303 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2022/04/medical-spa-302.jpg",
               bookedBy: [],
             },
-
             {
               name: i18next.t("extraServices.detoxBodyAndMind"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t(
+                "extraServices.detoxBodyAndMindDescription",
+              ),
+              duration: 7,
+              price: "117 350 UAH",
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/12/Detox-Body-Mind-min.jpg",
               bookedBy: [],
             },
-
             {
               name: i18next.t("extraServices.reEnergy"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t("extraServices.reEnergyDescription"),
+              price: "35 500 UAH",
+              duration: 3,
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/03/Kopiya-_Anti-stres-spa-vikend_rekomendovani-3.jpg",
               bookedBy: [],
             },
-
             {
               name: i18next.t("extraServices.fitHealth"),
-              description: "",
-              price: "",
-              imageUrl: "",
+              description: i18next.t("extraServices.fitHealthDescription"),
+              price: "43 200 UAH",
+              duration: 3,
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2018/02/IMG_2879.png",
               bookedBy: [],
             },
           ],

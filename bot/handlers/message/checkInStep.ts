@@ -13,6 +13,6 @@ export const checkInStep = (props: CommonStepParams) => {
   } else {
     session.checkInDate = msg.text!;
     session.roomBookingStage = "awaiting_checkout_date";
-    bot.sendMessage(chatId, i18next.t("bookingProcess.enterCheckoutDate"));
+    bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
   }
 };
