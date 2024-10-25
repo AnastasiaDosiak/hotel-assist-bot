@@ -73,17 +73,21 @@ export const handleOptionSelection = async (
   const keyboardOptions = [
     [
       {
-        text: i18next.t("extraServices.bookThisOption"),
-        callback_data: `book_option_${optionName}`,
-      },
-    ],
-    [
-      {
         text: i18next.t("extraServices.backToServices"),
         callback_data: `back_to_services`,
       },
     ],
   ];
+
+  // for golf we show only info
+  if (session.serviceName !== i18next.t("extraServices.golfClub")) {
+    keyboardOptions.unshift([
+      {
+        text: i18next.t("extraServices.bookThisOption"),
+        callback_data: `book_option_${optionName}`,
+      },
+    ]);
+  }
 
   await bot.sendMessage(
     chatId,
@@ -91,14 +95,24 @@ export const handleOptionSelection = async (
   );
 
   await bot.sendPhoto(chatId, optionDetails?.imageUrl as string);
-  await bot.sendMessage(
-    chatId,
-    `${optionDetails?.description}\n\nPrice: ${optionDetails?.price}`,
-    {
+
+  if (session.serviceName === i18next.t("extraServices.golfClub")) {
+    await bot.sendMessage(chatId, `${optionDetails?.description}`, {
       reply_markup: {
         resize_keyboard: true,
         inline_keyboard: keyboardOptions,
       },
-    },
-  );
+    });
+  } else {
+    await bot.sendMessage(
+      chatId,
+      `${optionDetails?.description}\n\nPrice: ${optionDetails?.price}`,
+      {
+        reply_markup: {
+          resize_keyboard: true,
+          inline_keyboard: keyboardOptions,
+        },
+      },
+    );
+  }
 };

@@ -40,20 +40,7 @@ export const generateExtraServices = async () => {
               price: "2500 UAH",
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2022/05/IMG_4390.jpeg",
-              bookedBy: [
-                {
-                  userId: "userId",
-                  phone: "380959272623",
-                  startDate: "24/10/2024",
-                  endDate: "24/10/2024",
-                  serviceName: "SPA",
-                  programName: "One day programs",
-                  option: "Abonment Wellness-Day",
-                  serviceBookingStage: "check_availability",
-                  firstName: "dsa",
-                  lastName: "dsa",
-                },
-              ],
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.spaDayRelaxation"),
@@ -75,18 +62,18 @@ export const generateExtraServices = async () => {
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2018/05/EDEM-med-34.jpg",
               bookedBy: [
-                {
-                  userId: "userId",
-                  phone: "380959272623",
-                  startDate: "24/10/2024",
-                  endDate: "27/10/2024",
-                  serviceName: "SPA",
-                  programName: "One day programs",
-                  option: "Abonment Wellness-Day",
-                  serviceBookingStage: "check_availability",
-                  firstName: "mommy",
-                  lastName: "dsmamaa",
-                },
+                // {
+                //   userId: "userId",
+                //   phone: "380959272623",
+                //   startDate: "24/10/2024",
+                //   endDate: "27/10/2024",
+                //   serviceName: "SPA",
+                //   programName: "One day programs",
+                //   option: "Abonment Wellness-Day",
+                //   serviceBookingStage: "check_availability",
+                //   firstName: "mommy",
+                //   lastName: "dsmamaa",
+                // },
               ],
             },
             {
@@ -208,35 +195,34 @@ export const generateExtraServices = async () => {
     },
     {
       id: faker.string.uuid(),
-      serviceName: i18next.t("extraServices.sport"),
-      programs: [
-        {
-          options: [
-            i18next.t("extraServices.golf"),
-            i18next.t("extraServices.tennis"),
-            i18next.t("extraServices.aquaAerobics"),
-            i18next.t("extraServices.yoga"),
-            i18next.t("extraServices.kenesis"),
-            i18next.t("extraServices.miniFootball"),
-            i18next.t("extraServices.scandinavianWalking"),
-            i18next.t("extraServices.fitness"),
-            i18next.t("extraServices.sup"),
-            i18next.t("extraServices.flyYoga"),
-            i18next.t("extraServices.powerYoga"),
-            i18next.t("extraServices.backHorseRiding"),
-          ],
-        },
-      ],
-    },
-    {
-      id: faker.string.uuid(),
       serviceName: i18next.t("extraServices.restaurants"),
       programs: [
         {
           options: [
-            i18next.t("extraServices.restaurantPanorama"),
-            i18next.t("extraServices.restaurantDeVine"),
-            i18next.t("extraServices.restaurantEdem"),
+            {
+              name: i18next.t("extraServices.restaurantPanorama"),
+              description: i18next.t(
+                "extraServices.golfClubGeneralInformation",
+              ),
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+            },
+            {
+              name: i18next.t("extraServices.restaurantDeVine"),
+              description: i18next.t(
+                "extraServices.golfClubGeneralInformation",
+              ),
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+            },
+            {
+              name: i18next.t("extraServices.restaurantEdem"),
+              description: i18next.t(
+                "extraServices.golfClubGeneralInformation",
+              ),
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+            },
           ],
         },
       ],
@@ -246,7 +232,16 @@ export const generateExtraServices = async () => {
       serviceName: i18next.t("extraServices.golfClub"),
       programs: [
         {
-          options: i18next.t("extraServices.generalInformation"),
+          options: [
+            {
+              name: i18next.t("extraServices.golfClubInfoName"),
+              description: i18next.t(
+                "extraServices.golfClubGeneralInformation",
+              ),
+              imageUrl:
+                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+            },
+          ],
         },
       ],
     },

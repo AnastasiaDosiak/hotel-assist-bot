@@ -20,6 +20,7 @@ export type TSessionData = {
   programName: string;
   serviceName: string;
   option: string;
+  optionDuration: number;
   serviceBookingStage: string;
 };
 

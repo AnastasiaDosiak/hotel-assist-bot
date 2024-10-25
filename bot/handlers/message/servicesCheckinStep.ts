@@ -81,22 +81,23 @@ export const servicesCheckinStep = async (props: CommonStepParams) => {
         msg.text!,
         optionDetails?.duration as number,
       );
-
+      const checkoutDateFormatted = formatDate(checkoutDate.toDate());
+      session.checkOutDate = checkoutDateFormatted;
+      session.optionDuration = optionDetails?.duration as number;
       await checkOptionAvailability(
         serviceName,
         option,
         session.checkInDate,
-        checkoutDate.toString(),
+        session.checkOutDate,
       ).then((response) => {
-        console.log(response, "response >>>");
         if (typeof response === "string") {
-          console.log(response, "response");
           // If service is unavailable, send options to the user
           const nextAvailableDate = response.match(dateRegex);
           const nextAvailableDateMatch = nextAvailableDate
             ? nextAvailableDate[0]
             : null;
           if (nextAvailableDateMatch) {
+            session.checkInDate = nextAvailableDate!.toString();
             bot.sendMessage(chatId, response, {
               reply_markup: {
                 inline_keyboard: [

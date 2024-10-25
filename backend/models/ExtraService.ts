@@ -5,10 +5,10 @@ import { BookedBy } from "./BookedBy";
 export class Option extends Model {
   public name!: string;
   public description!: string;
-  public price!: string;
+  public price?: string;
   public imageUrl!: string;
   public duration?: number;
-  public bookedBy!: BookedBy[];
+  public bookedBy?: BookedBy[];
 }
 
 export class Program extends Model {

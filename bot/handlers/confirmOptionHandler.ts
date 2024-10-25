@@ -73,7 +73,6 @@ export const confirmOptionStep = async (props: CommonStepParams) => {
     } else {
       bookProgramOption(serviceName, programName, option, bookingData).then(
         async (res) => {
-          console.log(res, 'res in book option')
           await bot.sendMessage(
             chatId,
             i18next.t("extraServices.bookingOptionConfirmation", {

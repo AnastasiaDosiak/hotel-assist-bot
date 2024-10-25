@@ -1,7 +1,12 @@
 import { isOneDayProgram } from "./../common/constants";
 import i18next from "i18next";
 import { CallbackHandler, TSessionData } from "../common/types";
-import { addThreeDaysToDate, formatDate } from "../common/utils";
+import {
+  addDaysToStartDate,
+  addThreeDaysToDate,
+  formatDate,
+  isSpaService,
+} from "../common/utils";
 
 // Handler for room booking
 export const handleBookRoom: CallbackHandler = async ({
@@ -106,9 +111,24 @@ export const handleContinueReservationOption: CallbackHandler = ({
     const nextAvailableDate = data.split("_")[3];
     session.serviceBookingStage = "awaiting_first_name";
     session.checkInDate = nextAvailableDate;
-    session.checkOutDate = isOneDayProgram(session.programName)
-      ? nextAvailableDate
-      : formatDate(addThreeDaysToDate(nextAvailableDate).toDate());
+    if (isSpaService(session.serviceName)) {
+      session.checkOutDate = isOneDayProgram(session.programName)
+        ? nextAvailableDate
+        : formatDate(addThreeDaysToDate(nextAvailableDate).toDate());
+    } else {
+      const newCheckoutDate = addDaysToStartDate(
+        nextAvailableDate,
+        session.optionDuration,
+      );
+      const checkoutDateFormatted = formatDate(newCheckoutDate.toDate());
+      session.checkOutDate = checkoutDateFormatted;
+    }
+    bot.sendMessage(
+      chatId,
+      i18next.t("extraServices.noteCheckoutDate", {
+        checkoutDate: session.checkOutDate,
+      }),
+    );
     bot.sendMessage(chatId, i18next.t("enterFirstName"));
   }
 };

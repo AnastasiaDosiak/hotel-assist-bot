@@ -106,24 +106,22 @@ export const checkOptionAvailability = async (
   const isAvailable = option.bookedBy.every((booking: TUserBookingData) => {
     const bookedCheckIn = dayjs(booking.startDate, DATE_FORMAT).toDate();
     const bookedCheckOut = dayjs(booking.endDate, DATE_FORMAT).toDate();
-    console.log(bookedCheckIn, "bookedCheckIn");
     const isConflict =
       (checkIn < bookedCheckOut && checkOut > bookedCheckIn) || // Overlap in booking
       checkIn.getTime() === bookedCheckIn.getTime(); // Exact start date conflict
-    console.log(isConflict, "isConflict");
 
     if (isConflict) {
       if (!earliestAvailableDate || bookedCheckOut > earliestAvailableDate) {
         earliestAvailableDate = bookedCheckOut;
       }
     }
-    console.log(isConflict, "isConflict");
     return !isConflict;
   });
 
   if (isAvailable) {
     return option;
   }
+
   if (earliestAvailableDate) {
     const nextAvailableDate = dayjs(earliestAvailableDate).format(DATE_FORMAT);
     return i18next.t("extraServices.optionNotFound", {
@@ -148,7 +146,7 @@ export const checkSpaOptionAvailability = async (
   const optionDetails = await getSpaOptionDetails(programName, optionName);
   let earliestAvailableDate: Date | null = null;
 
-  const isAvailable = optionDetails?.bookedBy.every(
+  const isAvailable = optionDetails?.bookedBy?.every(
     (booking: TUserBookingData) => {
       const bookedCheckIn = dayjs(booking.startDate, DATE_FORMAT).toDate();
       // + 1 day if OneDayProgram
