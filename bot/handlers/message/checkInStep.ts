@@ -7,12 +7,14 @@ export const checkInStep = (props: CommonStepParams) => {
 
   const chatId = msg.chat.id;
   const currentRoomTypeIndex = session.roomIndex;
-  session.roomType = rooms[currentRoomTypeIndex].type;
-  if (!isValidDate(msg.text!)) {
-    bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
-  } else {
-    session.checkInDate = msg.text!;
-    session.roomBookingStage = "awaiting_checkout_date";
-    bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
+  if (rooms) {
+    session.roomType = rooms[currentRoomTypeIndex].type;
+    if (!isValidDate(msg.text!)) {
+      bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
+    } else {
+      session.checkInDate = msg.text!;
+      session.roomBookingStage = "awaiting_checkout_date";
+      bot.sendMessage(chatId, i18next.t("enterCheckoutDate"));
+    }
   }
 };

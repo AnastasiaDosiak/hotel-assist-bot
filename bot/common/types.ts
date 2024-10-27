@@ -22,6 +22,9 @@ export type TSessionData = {
   option: string;
   optionDuration: number;
   serviceBookingStage: string;
+  startBookingTime?: string;
+  endBookingTime?: string;
+  roomNumber?: number;
 };
 
 export type TUserSession = {
@@ -61,10 +64,10 @@ export interface CommandParams {
 
 export interface CommonStepParams {
   bot: TelegramBot;
-  rooms: TRoomType[];
+  rooms?: TRoomType[];
   msg: TelegramBot.Message;
   session: TSessionData;
-  setCurrentRoomIndex: (index: number) => number;
+  setCurrentRoomIndex?: (index: number) => number;
 }
 
 export type OptionsType<T extends Record<string, any>> = T[];

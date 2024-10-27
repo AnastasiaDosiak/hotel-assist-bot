@@ -6,9 +6,10 @@ export class Option extends Model {
   public name!: string;
   public description!: string;
   public price?: string;
-  public imageUrl!: string;
+  public imageUrl?: string;
   public duration?: number;
-  public bookedBy?: BookedBy[];
+  public bookedBy!: BookedBy[];
+  public availableTables?: number;
 }
 
 export class Program extends Model {
@@ -21,6 +22,8 @@ export class ExtraService extends Model {
   public id!: string;
   public serviceName!: string;
   public programs!: Program[];
+  public startWorkingTime?: string;
+  public endWorkingTime?: string;
 }
 
 ExtraService.init(

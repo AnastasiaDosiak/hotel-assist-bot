@@ -19,51 +19,56 @@ export const checkoutWaitingStep = (props: CommonStepParams) => {
   } else {
     session.checkOutDate = msg.text!;
     const currentRoomTypeIndex = session.roomIndex;
-    const roomType = rooms[currentRoomTypeIndex].type;
+    if (rooms) {
+      const roomType = rooms[currentRoomTypeIndex].type;
 
-    // Perform the room availability check once after both dates are entered
-    checkRoomAvailability(roomType, checkInDate, checkOutDate)
-      .then((response) => {
-        if (typeof response === "string") {
-          // If room is unavailable, send options to the user
-          const nextAvailableDate = response.match(dateRegex);
-          const nextAvailableDateMatch = nextAvailableDate
-            ? nextAvailableDate[0]
-            : null;
-          if (nextAvailableDateMatch) {
-            bot.sendMessage(chatId, response, {
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    {
-                      text: i18next.t("bookingProcess.continueReservation", {
-                        nextAvailableDate,
-                      }),
-                      callback_data: `continue_reservation_${nextAvailableDate}`,
-                    },
-                    {
-                      text: i18next.t("bookingProcess.seeOtherRooms"),
-                      callback_data: "see_other_rooms",
-                    },
+      // Perform the room availability check once after both dates are entered
+      checkRoomAvailability(roomType, checkInDate, checkOutDate)
+        .then((response) => {
+          if (typeof response === "string") {
+            // If room is unavailable, send options to the user
+            const nextAvailableDate = response.match(dateRegex);
+            const nextAvailableDateMatch = nextAvailableDate
+              ? nextAvailableDate[0]
+              : null;
+            if (nextAvailableDateMatch) {
+              bot.sendMessage(chatId, response, {
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      {
+                        text: i18next.t("bookingProcess.continueReservation", {
+                          nextAvailableDate,
+                        }),
+                        callback_data: `continue_reservation_${nextAvailableDate}`,
+                      },
+                      {
+                        text: i18next.t("bookingProcess.seeOtherRooms"),
+                        callback_data: "see_other_rooms",
+                      },
+                    ],
                   ],
-                ],
-              },
-            });
+                },
+              });
+            }
+          } else if (response) {
+            // If room is available, proceed with gathering user details
+            session.availableRoomId = response.id; // Store available room id in the session
+            session.roomBookingStage = "awaiting_first_name";
+            bot.sendMessage(chatId, i18next.t("enterFirstName"));
+          } else {
+            console.log("response: ", response);
+            resetSession(session);
+            bot.sendMessage(
+              chatId,
+              i18next.t("bookingProcess.noRoomsAvailable"),
+            );
           }
-        } else if (response) {
-          // If room is available, proceed with gathering user details
-          session.availableRoomId = response.id; // Store available room id in the session
-          session.roomBookingStage = "awaiting_first_name";
-          bot.sendMessage(chatId, i18next.t("enterFirstName"));
-        } else {
-          console.log("response: ", response);
-          resetSession(session);
-          bot.sendMessage(chatId, i18next.t("bookingProcess.noRoomsAvailable"));
-        }
-      })
-      .catch((error) => {
-        bot.sendMessage(chatId, i18next.t("bookingProcess.errorOccurred"));
-        console.error(error);
-      });
+        })
+        .catch((error) => {
+          bot.sendMessage(chatId, i18next.t("bookingProcess.errorOccurred"));
+          console.error(error);
+        });
+    }
   }
 };

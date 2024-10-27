@@ -19,7 +19,20 @@ export const generateRooms = async (numRooms: number) => {
       bookedDates: [],
       minGuests: roomType.minGuests,
       maxGuests: roomType.maxGuests,
-      bookedBy: [],
+      bookedBy: [
+        {
+          userId: "userId",
+          phone: "380959272623",
+          startDate: "29/10/2024",
+          endDate: "03/11/2024",
+          serviceName: "SPA",
+          programName: "One day programs",
+          option: "Abonment Wellness-Day",
+          serviceBookingStage: "check_availability",
+          firstName: "mommy",
+          lastName: "dsmamaa",
+        },
+      ],
       extraServices: [],
     });
   }
@@ -62,18 +75,18 @@ export const generateExtraServices = async () => {
               imageUrl:
                 "https://edemresort.com/wp-content/uploads/2018/05/EDEM-med-34.jpg",
               bookedBy: [
-                // {
-                //   userId: "userId",
-                //   phone: "380959272623",
-                //   startDate: "24/10/2024",
-                //   endDate: "27/10/2024",
-                //   serviceName: "SPA",
-                //   programName: "One day programs",
-                //   option: "Abonment Wellness-Day",
-                //   serviceBookingStage: "check_availability",
-                //   firstName: "mommy",
-                //   lastName: "dsmamaa",
-                // },
+                {
+                  userId: "userId",
+                  phone: "380959272623",
+                  startDate: "24/10/2024",
+                  endDate: "27/10/2024",
+                  serviceName: "SPA",
+                  programName: "One day programs",
+                  option: "Abonment Wellness-Day",
+                  serviceBookingStage: "check_availability",
+                  firstName: "mommy",
+                  lastName: "dsmamaa",
+                },
               ],
             },
             {
@@ -196,32 +209,37 @@ export const generateExtraServices = async () => {
     {
       id: faker.string.uuid(),
       serviceName: i18next.t("extraServices.restaurants"),
+      // can be several per day, we need hours here
       programs: [
         {
           options: [
             {
               name: i18next.t("extraServices.restaurantPanorama"),
               description: i18next.t(
-                "extraServices.golfClubGeneralInformation",
+                "extraServices.restaurantPanoramaDescription",
               ),
               imageUrl:
-                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+                "https://edemresort.com/wp-content/uploads/2018/03/LUT_1685-1920x1282.jpg",
+              availableTables: faker.number.int({ min: 1, max: 40 }),
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.restaurantDeVine"),
               description: i18next.t(
-                "extraServices.golfClubGeneralInformation",
+                "extraServices.restaurantDeVineDescription",
               ),
               imageUrl:
-                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+                "https://edemresort.com/wp-content/uploads/2018/03/EDEM105-1-1920x1280.jpg",
+              availableTables: faker.number.int({ min: 1, max: 50 }),
+              bookedBy: [],
             },
             {
               name: i18next.t("extraServices.restaurantEdem"),
-              description: i18next.t(
-                "extraServices.golfClubGeneralInformation",
-              ),
+              description: i18next.t("extraServices.restaurantEdemDescription"),
               imageUrl:
-                "https://edemresort.com/wp-content/uploads/2024/04/IMG_9120.jpeg",
+                "https://edemresort.com/wp-content/uploads/2019/03/DSC_9469-Exposure-0000-1920x1282.jpg",
+              availableTables: faker.number.int({ min: 1, max: 30 }),
+              bookedBy: [],
             },
           ],
         },
@@ -247,14 +265,102 @@ export const generateExtraServices = async () => {
     },
     {
       id: faker.string.uuid(),
-      serviceName: i18next.t("extraServices.roomServices"),
+      serviceName: i18next.t("extraServices.extraCleaning"),
+      startWorkingTime: "10:00",
+      endWorkingTime: "18:00",
       programs: [
         {
+          // can be one per day
           options: [
-            i18next.t("extraServices.extraCleaning"),
-            i18next.t("extraServices.laundry"),
-            i18next.t("extraServices.transfer"),
-            i18next.t("extraServices.foodFromRestaurantIntoRoom"),
+            {
+              name: i18next.t("extraServices.extraCleaningInformation"),
+              description: i18next.t("extraServices.extraCleaningInformation"),
+              price: "1 000 UAH",
+              bookedBy: [],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: faker.string.uuid(),
+      serviceName: i18next.t("extraServices.laundry"),
+      programs: [
+        {
+          // can be several per day, we need hours here
+          options: [
+            {
+              name: i18next.t("extraServices.laundryShirt"),
+              description: i18next.t("extraServices.laundryShirtDesc"),
+              price: "300 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryPants"),
+              description: i18next.t("extraServices.laundryPantsDesc"),
+              price: "350 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryDress"),
+              description: i18next.t("extraServices.laundryDressDesc"),
+              price: "350 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundrySuit"),
+              description: i18next.t("extraServices.laundrySuitDesc"),
+              price: "700 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryTshirt"),
+              description: i18next.t("extraServices.laundryTshirtDesc"),
+              price: "300 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundrySweater"),
+              description: i18next.t("extraServices.laundrySweaterDesc"),
+              price: "500 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryUnderwear"),
+              description: i18next.t("extraServices.laundryUnderwearDesc"),
+              price: "200 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundrySocks"),
+              description: i18next.t("extraServices.laundrySocksDesc"),
+              price: "100 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryJacket"),
+              description: i18next.t("extraServices.laundryJacketDesc"),
+              price: "520 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryBathrobe"),
+              description: i18next.t("extraServices.laundryBathrobeDesc"),
+              price: "280 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryTowels"),
+              description: i18next.t("extraServices.laundryTowelsDesc"),
+              price: "200 UAH",
+              bookedBy: [],
+            },
+            {
+              name: i18next.t("extraServices.laundryFullService"),
+              description: i18next.t("extraServices.laundryFullServiceDesc"),
+              price: "1 500 UAH",
+              bookedBy: [],
+            },
           ],
         },
       ],

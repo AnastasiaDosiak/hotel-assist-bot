@@ -94,9 +94,14 @@ export const handleOptionSelection = async (
     i18next.t("extraServices.selectedOption", { optionName }),
   );
 
-  await bot.sendPhoto(chatId, optionDetails?.imageUrl as string);
+  if (session.serviceName !== i18next.t("extraServices.laundry")) {
+    await bot.sendPhoto(chatId, optionDetails?.imageUrl as string);
+  }
 
-  if (session.serviceName === i18next.t("extraServices.golfClub")) {
+  if (
+    session.serviceName === i18next.t("extraServices.golfClub") ||
+    session.serviceName === i18next.t("extraServices.restaurants")
+  ) {
     await bot.sendMessage(chatId, `${optionDetails?.description}`, {
       reply_markup: {
         resize_keyboard: true,

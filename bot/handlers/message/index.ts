@@ -8,6 +8,9 @@ import { lastNameStep } from "./lastNameStep";
 import { confirmStep } from "./confirmStep";
 import { servicesCheckinStep } from "./servicesCheckinStep";
 import { confirmOptionStep } from "../confirmOptionHandler";
+import { servicesBookedRoomContactStep } from "./servicesBookedRoomContactStep";
+import { servicesBookedRoomNumberStep } from "./servicesBookedRoomNumberStep";
+import { servicesBookedCheckInStep } from "./servicesBookedCheckInDate";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -42,7 +45,17 @@ export const handleTextMessage = (
       }
     }
     if (session.serviceBookingStage) {
-      if (session.serviceBookingStage === "awaiting_checkin_date") {
+      if (session.serviceBookingStage === "awaiting_booked_room_number") {
+        servicesBookedRoomNumberStep(commonStepParams);
+      } else if (
+        session.serviceBookingStage === "awaiting_booked_room_contact"
+      ) {
+        servicesBookedRoomContactStep(commonStepParams);
+      } else if (
+        session.serviceBookingStage === "awaiting_booked_checkin_date"
+      ) {
+        servicesBookedCheckInStep(commonStepParams);
+      } else if (session.serviceBookingStage === "awaiting_checkin_date") {
         servicesCheckinStep(commonStepParams);
       } else if (session.serviceBookingStage === "awaiting_first_name") {
         firstNameStep(commonStepParams, "serviceBookingStage");

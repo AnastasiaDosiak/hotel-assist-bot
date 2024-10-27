@@ -138,3 +138,6 @@ export const sortPrograms = (
 
 export const isSpaService = (serviceName: string) =>
   serviceName === i18next.t("extraServices.spa");
+
+export const isLaundryService = (serviceName: string) =>
+  serviceName === i18next.t("extraServices.laundry");

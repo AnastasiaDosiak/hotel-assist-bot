@@ -7,7 +7,7 @@ export const setupStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session, setCurrentRoomIndex } = props;
   const chatId = msg.chat.id;
 
-  if (!session?.roomBookingStage) {
+  if (!session?.roomBookingStage && setCurrentRoomIndex && rooms) {
     if (msg.text === i18next.t("bookRoom")) {
       setCurrentRoomIndex(0);
       sendOrUpdateRoomTypeDetails(bot, chatId, null, 0, rooms);

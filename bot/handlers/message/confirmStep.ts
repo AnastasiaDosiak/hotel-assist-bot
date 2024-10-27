@@ -32,23 +32,24 @@ export const confirmStep = (props: CommonStepParams) => {
           session.checkOutDate,
         );
         const currentRoomTypeIndex = session.roomIndex;
-        const totalPrice = totalDays * rooms[currentRoomTypeIndex].price;
-
-        bot.sendMessage(
-          chatId,
-          i18next.t("bookingProcess.bookingConfirmation", {
-            roomType: session.roomType,
-            checkIn: session.checkInDate,
-            checkOut: session.checkOutDate,
-            totalDays,
-            totalPrice,
-            firstName: session.firstName,
-            lastName: session.lastName,
-            phone: session.phone,
-          }),
-          options,
-        );
-        resetSession(session);
+        if (rooms) {
+          const totalPrice = totalDays * rooms[currentRoomTypeIndex].price;
+          bot.sendMessage(
+            chatId,
+            i18next.t("bookingProcess.bookingConfirmation", {
+              roomType: session.roomType,
+              checkIn: session.checkInDate,
+              checkOut: session.checkOutDate,
+              totalDays,
+              totalPrice,
+              firstName: session.firstName,
+              lastName: session.lastName,
+              phone: session.phone,
+            }),
+            options,
+          );
+          resetSession(session);
+        }
       })
       .catch((error) => {
         bot.sendMessage(chatId, i18next.t("bookingProcess.bookingError"));
