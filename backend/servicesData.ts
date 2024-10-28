@@ -4,6 +4,7 @@ import { ExtraService } from "./models/ExtraService";
 import i18next from "i18next";
 import { faker } from "@faker-js/faker";
 import { FrequentlyAskedQuestion } from "./models/FrequentlyAskedQuestion";
+import { Feedback } from "./models/Feedback";
 
 export const generateFAQ = async () => {
   await FrequentlyAskedQuestion.bulkCreate([
@@ -100,6 +101,18 @@ export const generateRooms = async (numRooms: number) => {
         },
       ],
       extraServices: [],
+    });
+  }
+};
+
+export const generateFeedbacks = async (feedbacks: number) => {
+  for (let i = 0; i < feedbacks; i++) {
+    await Feedback.create({
+      id: faker.string.uuid(),
+      estimation: faker.number.int({ min: 1, max: 5 }),
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      comment: faker.lorem.sentence(),
     });
   }
 };

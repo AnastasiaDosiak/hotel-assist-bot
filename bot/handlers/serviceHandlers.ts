@@ -48,6 +48,36 @@ export const handleFrequentlyAskedQuestions = async (
   });
 };
 
+export const handleFeedbacks = async (bot: TelegramBot, chatId: number) => {
+  const options = [
+    [
+      {
+        text: i18next.t("feedbackSection.leaveFeedback"),
+        callback_data: `leave_feedback`,
+      },
+    ],
+    [
+      {
+        text: i18next.t("feedbackSection.rate"),
+        callback_data: `rate_hotel`,
+      },
+    ],
+    [
+      {
+        text: i18next.t("feedbackSection.seeAllFeedbacks"),
+        callback_data: `see_all_feedbacks`,
+      },
+    ],
+  ];
+
+  await bot.sendMessage(chatId, i18next.t("feedbackSection.selectAction"), {
+    reply_markup: {
+      resize_keyboard: true,
+      inline_keyboard: options,
+    },
+  });
+};
+
 export const handleServiceCategory = async (
   bot: TelegramBot,
   chatId: number,

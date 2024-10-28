@@ -162,5 +162,11 @@
     "questionNotFound": "Question with id {{id}} not found.",
     "backToQuestions": "Back to quesitons",
     "selectedQuestion": "You have selected '{{title}}' question."
+  },
+  "feedbackSection": {
+    "selectAction": "Please, choose action you would like to do:",
+    "leaveFeedback": "Leave feedback",
+    "rate": "Rate us",
+    "seeAllFeedbacks": "See all feedbacks"
   }
 }
