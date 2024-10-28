@@ -13,7 +13,6 @@ export const startCommand = (commandParams: CommandParams) => {
             [{ text: i18next.t("bookRoom") }],
             [{ text: i18next.t("additionalServices") }],
             [{ text: i18next.t("feedback") }],
-            [{ text: i18next.t("cityHelp") }],
             [{ text: i18next.t("faq") }],
           ],
           resize_keyboard: true,
