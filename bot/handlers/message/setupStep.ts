@@ -1,7 +1,10 @@
 import i18next from "i18next";
 import { sendOrUpdateRoomTypeDetails } from "../../services/roomService";
 import { CommonStepParams } from "../../common/types";
-import { handleExtraServices } from "../serviceHandlers";
+import {
+  handleExtraServices,
+  handleFrequentlyAskedQuestions,
+} from "../serviceHandlers";
 
 export const setupStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session, setCurrentRoomIndex } = props;
@@ -14,6 +17,12 @@ export const setupStep = (props: CommonStepParams) => {
     }
     if (msg.text === i18next.t("additionalServices")) {
       handleExtraServices(bot, chatId);
+    }
+    if (msg.text === i18next.t("additionalServices")) {
+      handleExtraServices(bot, chatId);
+    }
+    if (msg.text === i18next.t("faq")) {
+      handleFrequentlyAskedQuestions(bot, chatId);
     }
   }
 };

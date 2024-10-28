@@ -2,7 +2,11 @@ import i18next from "i18next";
 import TelegramBot from "node-telegram-bot-api";
 import { ExtraService } from "../../backend/models/ExtraService";
 import { CallbackHandler, TSessionData, TUserSession } from "../common/types";
-import { createKeyboardOptions, isSpaService } from "../common/utils";
+import {
+  createKeyboardOptions,
+  createQuestionsKeyboardOptions,
+  isSpaService,
+} from "../common/utils";
 
 // Handler for service selection
 export const handleSelectService: CallbackHandler = ({
@@ -27,6 +31,19 @@ export const handleExtraServices = async (bot: TelegramBot, chatId: number) => {
     reply_markup: {
       resize_keyboard: true,
       inline_keyboard: serviceOptions,
+    },
+  });
+};
+
+export const handleFrequentlyAskedQuestions = async (
+  bot: TelegramBot,
+  chatId: number,
+) => {
+  const questionsOptions = await createQuestionsKeyboardOptions();
+  await bot.sendMessage(chatId, i18next.t("faqSection.selectQuestion"), {
+    reply_markup: {
+      resize_keyboard: true,
+      inline_keyboard: questionsOptions,
     },
   });
 };

@@ -69,7 +69,9 @@ export const handleCallbackQuery = (
     data.includes("select_spa_option_") ||
     data.includes("select_spa_program_") ||
     data.includes("select_option_") ||
-    data.includes("back_to_services")
+    data.includes("back_to_services") ||
+    data.includes("select_question_") ||
+    data.includes("back_to_questions")
   ) {
     bot.editMessageReplyMarkup(
       { inline_keyboard: [] }, // Empty array to remove the keyboard

@@ -11,6 +11,7 @@ import { handleSeeOtherRooms } from "./roomHandlers";
 import { handleSelectService } from "./serviceHandlers";
 import { handleSelectOption, handleSelectSpaOption } from "./optionHandler";
 import { backToServices } from "./backToServicesHandler";
+import { backToQuestions, handleSelectQuestion } from "./faqSectionHandlers";
 
 // Mapping handlers based on specific prefixes
 const callbackHandlers: CallbackHandlersMap = {
@@ -22,9 +23,11 @@ const callbackHandlers: CallbackHandlersMap = {
   select_spa_program_: handleSelectSpaProgram,
   select_spa_option_: handleSelectSpaOption,
   back_to_services: backToServices,
+  back_to_questions: backToQuestions,
   book_spa_option_: handleBookSpaOption,
   select_option_: handleSelectOption,
   book_option_: handleBookOption,
+  select_question: handleSelectQuestion,
 };
 
 export default callbackHandlers;

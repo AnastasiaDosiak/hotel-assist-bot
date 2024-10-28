@@ -1,7 +1,11 @@
 import express, { Request, Response } from "express";
 import { sequelize } from "./db";
 import { Room } from "./models/Room";
-import { generateExtraServices, generateRooms } from "./servicesData";
+import {
+  generateExtraServices,
+  generateFAQ,
+  generateRooms,
+} from "./servicesData";
 import { initI18n } from "../i18n";
 import { ExtraService } from "./models/ExtraService";
 
@@ -24,6 +28,7 @@ app.get("/services", async (req: Request, res: Response) => {
 sequelize.sync({ force: true }).then(async () => {
   await generateRooms(50);
   await generateExtraServices();
+  await generateFAQ();
 
   app.listen(PORT, () => {
     console.log(`Backend server running on port ${PORT}`);

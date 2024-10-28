@@ -3,6 +3,72 @@ import { Room } from "./models/Room";
 import { ExtraService } from "./models/ExtraService";
 import i18next from "i18next";
 import { faker } from "@faker-js/faker";
+import { FrequentlyAskedQuestion } from "./models/FrequentlyAskedQuestion";
+
+export const generateFAQ = async () => {
+  await FrequentlyAskedQuestion.bulkCreate([
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.whatServicesOffer"),
+      answer: i18next.t("faqSection.whatServicesOfferAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.spaWorkingHours"),
+      answer: i18next.t("faqSection.spaWorkingHoursAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.spaTreatments"),
+      answer: i18next.t("faqSection.spaTreatmentsAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.detoxAndWelnessPrograms"),
+      answer: i18next.t("faqSection.detoxAndWelnessProgramsAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.golfCost"),
+      answer: i18next.t("faqSection.golfCostAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.rentConferenceRoom"),
+      answer: i18next.t("faqSection.rentConferenceRoomAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.restaurants"),
+      answer: i18next.t("faqSection.restaurantsAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.wedding"),
+      answer: i18next.t("faqSection.weddingAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.gym"),
+      answer: i18next.t("faqSection.gymAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.transfer"),
+      answer: i18next.t("faqSection.transferAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.booking"),
+      answer: i18next.t("faqSection.bookingAnswer"),
+    },
+    {
+      id: faker.string.uuid(),
+      title: i18next.t("faqSection.changeBooking"),
+      answer: i18next.t("faqSection.changeBookingAnswer"),
+    },
+  ]);
+};
 
 export const generateRooms = async (numRooms: number) => {
   for (let i = 0; i < numRooms; i++) {

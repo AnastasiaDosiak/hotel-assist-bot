@@ -27,7 +27,7 @@ export const bookProgramOptionStep = async (
         [{ text: i18next.t("additionalServices") }],
         [{ text: i18next.t("feedback") }],
         [{ text: i18next.t("cityHelp") }],
-        [{ text: i18next.t("checkInOut") }],
+        [{ text: i18next.t("faq") }],
       ],
       size_keyboard: true,
       one_time_keyboard: false,

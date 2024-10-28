@@ -4,6 +4,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { OptionsType, TSessionData } from "./types";
 import { ExtraService, Program } from "../../backend/models/ExtraService";
 import i18next from "i18next";
+import { FrequentlyAskedQuestion } from "../../backend/models/FrequentlyAskedQuestion";
 dayjs.extend(customParseFormat);
 
 export const isValidDate = (dateString: string) => {
@@ -97,6 +98,31 @@ export const getSpaOptionDetails = async (
   const programOptions = await getProgramOptions(programName);
   const option = programOptions?.find((option) => option.name === optionName);
   return option;
+};
+
+export const createQuestionsKeyboardOptions = async () => {
+  const questions = await FrequentlyAskedQuestion.findAll();
+
+  const keyboardOptions = questions.map((question) => [
+    {
+      text: question.title,
+      callback_data: `select_question_${question.id}`,
+    },
+  ]);
+
+  return keyboardOptions;
+};
+
+export const findQuestionAnswerById = async (id: string) => {
+  const foundQuestion = await FrequentlyAskedQuestion.findOne({
+    where: { id },
+  });
+
+  if (foundQuestion) {
+    return foundQuestion;
+  } else {
+    throw new Error(i18next.t("faqSection.questionNotFound", { id }));
+  }
 };
 
 export const createKeyboardOptions = <T extends Record<string, any>>(
