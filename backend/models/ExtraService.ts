@@ -10,6 +10,8 @@ export class Option extends Model {
   public duration?: number;
   public bookedBy!: BookedBy[];
   public availableTables?: number;
+  public startWorkingTime?: string;
+  public endWorkingTime?: string;
 }
 
 export class Program extends Model {
@@ -22,8 +24,6 @@ export class ExtraService extends Model {
   public id!: string;
   public serviceName!: string;
   public programs!: Program[];
-  public startWorkingTime?: string;
-  public endWorkingTime?: string;
 }
 
 ExtraService.init(

@@ -100,6 +100,8 @@
     "generalInformation": "General information",
     "roomServices": "Room Services",
     "extraCleaning": "Extra cleaning",
+    "extraCleaningInformation": "Need your room refreshed during your stay? \n\n While our standard cleaning service is provided once every 3-5 days or after your stay, you can request Extra Cleaning at any time for additional comfort. This service includes a thorough cleaning of your room, from dusting and vacuuming to sanitizing the bathroom and refreshing linens, ensuring a spotless and welcoming space throughout your visit.",
+    "bookExtraCleaning": "Book extra cleaning",
     "laundry": "Laundry",
     "transfer": "Transfer",
     "foodFromRestaurantIntoRoom": "Food from restaurant into room",
@@ -168,5 +170,13 @@
     "leaveFeedback": "Leave feedback",
     "rate": "Rate us",
     "seeAllFeedbacks": "See all feedbacks"
+  },
+  "extraCleaningSection": {
+    "maxRoomsReached": "Sorry, we can't provide you this service today as the number that ordered extra cleaning are reached.",
+    "lateRequest": "We are sorry to inform you that it's too late for this service. You have checkout day tomorrow, so we are unable to provide this service.",
+    "informMessage": "We will clean your room today. Please, wait from {{startServiceTime}} to {{endServiceTime}}.",
+    "workingHoursAreOver": "Sorry, today working hours are over for today.",
+    "successServiceBooked": "Thanks! Extra cleaning is booked and will be done through the day.",
+    "scheduledForNextDay": "Your requested cleaning service has been scheduled for tomorrow, {{nextDayFormatted}}. The cleaner will be available between {{startServiceTime}} and {{endServiceTime}}."
   }
 }

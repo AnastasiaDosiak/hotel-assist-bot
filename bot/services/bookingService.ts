@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { Room } from "../../backend/models/Room";
 import {
   Option,
@@ -10,10 +9,15 @@ import { DATE_FORMAT, isOneDayProgram } from "../common/constants";
 import i18next from "i18next";
 import {
   addThreeDaysToDate,
+  formatDate,
   getSpaOptionDetails,
+  isDateValidAndAfterNow,
   sortPrograms,
 } from "../common/utils";
 import { BookedBy } from "../../backend/models/BookedBy";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 export const bookRoom = async (roomId: string, userData: TUserBookingData) => {
   const roomToUpdate = await Room.findOne({
@@ -198,7 +202,10 @@ export const checkProvidedUserDataInRoom = async (
     const isProvidedPhoneCorrect = foundRoom.bookedBy.every(
       (booking: BookedBy) => {
         if (booking.phone === phone && booking.startDate === startDate) {
-          return booking;
+          // check if the checkout date is not in the past
+          if (isDateValidAndAfterNow(booking.endDate)) {
+            return booking;
+          }
         }
       },
     );
@@ -429,4 +436,184 @@ export const bookLaundryOption = async (
   } else {
     throw new Error(i18next.t("extraServices.notFoundRoom"));
   }
+};
+
+export const bookExtraCleaningOption = async (
+  serviceName: string,
+  laundryOption: string,
+  bookedRoomNumber: number,
+  providedPhone: string,
+  providedCheckInDate: string,
+) => {
+  const now = new Date();
+  const formattedTodayDate = formatDate(now); // Today's date in 'DD/MM/YYYY'
+  const requestedCleaningTime = now.toTimeString().slice(0, 5); // Current time in 'HH:mm'
+  const tomorrow = dayjs(now).add(1, "day").format(DATE_FORMAT); // Move to the next day
+
+  const foundBookedRoom = await Room.findOne({
+    where: { roomNumber: bookedRoomNumber },
+  });
+
+  if (!foundBookedRoom) {
+    throw new Error(i18next.t("extraServices.notFoundRoom"));
+  }
+
+  const serviceToUpdate = await ExtraService.findOne({
+    where: { serviceName },
+  });
+  if (!serviceToUpdate) {
+    throw new Error(
+      i18next.t("extraServices.serviceNotFound", { serviceName }),
+    );
+  }
+
+  const currentBooking = foundBookedRoom.bookedBy.find(
+    (booking: BookedBy) =>
+      booking.phone === providedPhone &&
+      booking.startDate === providedCheckInDate,
+  );
+
+  if (!currentBooking) {
+    return i18next.t("extraServices.bookedByInfoNotFound", { serviceName });
+  }
+
+  // Extract the current programs and options
+  const programToUpdate = findProgramWithOption(serviceToUpdate, laundryOption);
+
+  if (!programToUpdate) {
+    return i18next.t("extraServices.programNotFound", { laundryOption });
+  }
+
+  const optionToUpdate = programToUpdate.options.find(
+    (option: Option) => option.name === laundryOption,
+  );
+
+  const startServiceTime = optionToUpdate?.startWorkingTime;
+  const endServiceTime = optionToUpdate?.endWorkingTime;
+
+  // Check if the room limit has been reached for today
+  if (isRoomLimitReached(optionToUpdate, formattedTodayDate)) {
+    return i18next.t("extraCleaningSection.maxRoomsReached");
+  }
+
+  // Handle late request if outside working hours
+  if (
+    isOutsideWorkingHours(
+      requestedCleaningTime,
+      startServiceTime,
+      endServiceTime,
+    )
+  ) {
+    if (isLateRequest(currentBooking, formattedTodayDate, tomorrow)) {
+      return i18next.t("extraCleaningSection.lateRequest");
+    }
+
+    if (isScheduledForTomorrow(currentBooking, tomorrow)) {
+      await scheduleCleaningForNextDay(
+        currentBooking,
+        tomorrow,
+        serviceToUpdate,
+        programToUpdate,
+        optionToUpdate,
+      );
+      return i18next.t("extraCleaningSection.scheduledForNextDay", {
+        nextDayFormatted: tomorrow,
+        startServiceTime,
+        endServiceTime,
+      });
+    }
+  }
+
+  // Handle scheduled cleaning for today
+  await scheduleCleaningForToday(
+    currentBooking,
+    serviceToUpdate,
+    programToUpdate,
+    optionToUpdate,
+  );
+  return i18next.t("extraCleaningSection.informMessage", {
+    startServiceTime,
+    endServiceTime,
+  });
+};
+
+// Helper Functions
+
+const findProgramWithOption = (service: ExtraService, optionName: string) => {
+  return service
+    .getDataValue("programs")
+    .find((program: Program) =>
+      program.options.some((option: Option) => option.name === optionName),
+    );
+};
+
+const isRoomLimitReached = (option: Option, today: string) => {
+  return (
+    option.bookedBy.filter((booking: BookedBy) => booking.startDate === today)
+      .length >= 5
+  );
+};
+
+const isOutsideWorkingHours = (
+  requestedTime: string,
+  startTime?: string,
+  endTime?: string,
+) => {
+  return (
+    requestedTime < (startTime as string) || requestedTime > (endTime as string)
+  );
+};
+
+const isLateRequest = (booking: BookedBy, today: string, tomorrow: string) => {
+  const bookingEndDate = dayjs(booking.endDate, DATE_FORMAT);
+  const todayDate = dayjs(today, DATE_FORMAT);
+  const tomorrowDate = dayjs(tomorrow, DATE_FORMAT);
+
+  return (
+    bookingEndDate.isSame(todayDate) || bookingEndDate.isSame(tomorrowDate)
+  );
+};
+
+const isScheduledForTomorrow = (booking: BookedBy, tomorrow: string) => {
+  const tomorrowDate = dayjs(tomorrow, DATE_FORMAT);
+  return dayjs(booking.endDate, DATE_FORMAT).isAfter(tomorrowDate);
+};
+
+const scheduleCleaningForNextDay = async (
+  booking: BookedBy,
+  tomorrow: string,
+  service: ExtraService,
+  program: Program,
+  option: Option,
+) => {
+  booking.startDate = tomorrow;
+  option.bookedBy.push(booking);
+  updateServiceProgram(service, program, option);
+  await service.save();
+};
+
+const scheduleCleaningForToday = async (
+  booking: BookedBy,
+  service: ExtraService,
+  program: Program,
+  option: Option,
+) => {
+  option.bookedBy.push(booking);
+  updateServiceProgram(service, program, option);
+  await service.save();
+};
+
+const updateServiceProgram = (
+  service: ExtraService,
+  program: Program,
+  option: Option,
+) => {
+  const updatedProgram = {
+    ...program,
+    options: program.options.map((opt: Option) =>
+      opt.name === option.name ? option : opt,
+    ),
+  };
+  service.setDataValue("programs", [updatedProgram]);
+  service.changed("programs", true);
 };

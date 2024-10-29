@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import { CommonStepParams } from "../../common/types";
-import { isValidDate } from "../../common/utils";
+import { isDateValidAndAfterNow } from "../../common/utils";
 
 export const checkInStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session } = props;
@@ -9,7 +9,7 @@ export const checkInStep = (props: CommonStepParams) => {
   const currentRoomTypeIndex = session.roomIndex;
   if (rooms) {
     session.roomType = rooms[currentRoomTypeIndex].type;
-    if (!isValidDate(msg.text!)) {
+    if (!isDateValidAndAfterNow(msg.text!)) {
       bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
     } else {
       session.checkInDate = msg.text!;

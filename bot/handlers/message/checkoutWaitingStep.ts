@@ -1,6 +1,6 @@
 import i18next from "i18next";
 import {
-  isValidDate,
+  isDateValidAndAfterNow,
   isCheckoutDateValid,
   resetSession,
 } from "../../common/utils";
@@ -12,7 +12,7 @@ export const checkoutWaitingStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session } = props;
   const { checkInDate, checkOutDate } = session;
   const chatId = msg.chat.id;
-  if (!isValidDate(msg.text!)) {
+  if (!isDateValidAndAfterNow(msg.text!)) {
     bot.sendMessage(chatId, i18next.t("invalidDateFormat"));
   } else if (!isCheckoutDateValid(session.checkInDate, msg.text!)) {
     bot.sendMessage(msg.chat.id, i18next.t("checkoutEarlierThanCheckin"));

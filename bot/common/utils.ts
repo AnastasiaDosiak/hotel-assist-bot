@@ -9,6 +9,11 @@ dayjs.extend(customParseFormat);
 
 export const isValidDate = (dateString: string) => {
   const parsedDate = parseDate(dateString);
+  return parsedDate.isValid();
+};
+
+export const isDateValidAndAfterNow = (dateString: string) => {
+  const parsedDate = parseDate(dateString);
   return parsedDate.isValid() && parsedDate.isAfter(dayjs());
 };
 
@@ -167,3 +172,6 @@ export const isSpaService = (serviceName: string) =>
 
 export const isLaundryService = (serviceName: string) =>
   serviceName === i18next.t("extraServices.laundry");
+
+export const isExtraCleaningService = (serviceName: string) =>
+  serviceName === i18next.t("extraServices.extraCleaning");

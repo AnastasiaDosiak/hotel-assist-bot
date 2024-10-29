@@ -5,6 +5,7 @@ import {
   addDaysToStartDate,
   addThreeDaysToDate,
   formatDate,
+  isExtraCleaningService,
   isLaundryService,
   isSpaService,
 } from "../common/utils";
@@ -43,9 +44,12 @@ export const handleBookOption: CallbackHandler = async ({
   if (userSessions && message) {
     const session = userSessions[chatId];
     const { serviceName } = session;
+    const cleaningServices =
+      isLaundryService(serviceName) || isExtraCleaningService(serviceName);
+
     userSessions[chatId] = {
       ...userSessions[chatId],
-      serviceBookingStage: isLaundryService(serviceName)
+      serviceBookingStage: cleaningServices
         ? "awaiting_booked_room_number"
         : "awaiting_checkin_date",
       roomIndex: currentRoomIndex,
@@ -56,7 +60,7 @@ export const handleBookOption: CallbackHandler = async ({
       { inline_keyboard: [] },
       { chat_id: chatId, message_id: message.message_id },
     );
-    if (isLaundryService(serviceName)) {
+    if (cleaningServices) {
       await bot.sendMessage(
         chatId,
         i18next.t("extraServices.enterRoomDetails"),

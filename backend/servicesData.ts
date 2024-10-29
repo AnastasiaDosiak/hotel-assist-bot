@@ -90,8 +90,8 @@ export const generateRooms = async (numRooms: number) => {
         {
           userId: "userId",
           phone: "380959272623",
-          startDate: "29/10/2024",
-          endDate: "03/11/2024",
+          startDate: "28/10/2024",
+          endDate: "02/11/2024",
           serviceName: "SPA",
           programName: "One day programs",
           option: "Abonment Wellness-Day",
@@ -345,14 +345,13 @@ export const generateExtraServices = async () => {
     {
       id: faker.string.uuid(),
       serviceName: i18next.t("extraServices.extraCleaning"),
-      startWorkingTime: "10:00",
-      endWorkingTime: "18:00",
       programs: [
         {
-          // can be one per day
           options: [
             {
-              name: i18next.t("extraServices.extraCleaningInformation"),
+              name: i18next.t("extraServices.bookExtraCleaning"),
+              startWorkingTime: "10:00",
+              endWorkingTime: "20:00",
               description: i18next.t("extraServices.extraCleaningInformation"),
               price: "1 000 UAH",
               bookedBy: [],

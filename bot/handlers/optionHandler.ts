@@ -94,7 +94,10 @@ export const handleOptionSelection = async (
     i18next.t("extraServices.selectedOption", { optionName }),
   );
 
-  if (session.serviceName !== i18next.t("extraServices.laundry")) {
+  if (
+    session.serviceName !== i18next.t("extraServices.laundry") &&
+    session.serviceName !== i18next.t("extraServices.extraCleaning")
+  ) {
     await bot.sendPhoto(chatId, optionDetails?.imageUrl as string);
   }
 
