@@ -9,5 +9,7 @@ export const DATE_FORMAT = "DD/MM/YYYY";
 
 export const BOT_START_MESSAGE = /\/start/;
 
+export const BOT_HELP_MESSAGE = /\/help/;
+
 export const isOneDayProgram = (programName: string) =>
   i18next.t("extraServices.oneDayPrograms") === programName;

@@ -1,5 +1,6 @@
 {
-  "startMessage": "Hello! I'm HotelAssist bot for Edem Resort Medical & SPA. How can I help you?",
+  "helpMessage": "Assistance and Guide\n\nWelcome to the Hotel Assist Bot! Here’s a quick guide to using our services:\n\nBook a Room: Easily reserve a room by selecting your preferred dates and checking availability.\n\nRegistration of Additional Services: Manage and book additional services such as spa treatments, restaurant reservations, extra cleaning, laundry, and golf club access.\n\nFeedback and Evaluations: View the latest feedback from other guests or leave your own comments about your experience.\n\nFAQ Section: Find answers to common questions and learn more about our services.\n\nIf you need more information or assistance, feel free to reach out!",
+  "startMessage": "Hello! I'm HotelAssist bot for Edem Resort Medical & SPA.\n\nSelect the needed option from the buttons available in your menu.",
   "additionalServices": "Registration of additional services",
   "feedback": "Feedback and evaluations",
   "faq": "Frequently asked questions",

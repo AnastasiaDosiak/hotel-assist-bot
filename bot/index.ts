@@ -1,12 +1,13 @@
 import TelegramBot from "node-telegram-bot-api";
 import { roomTypes } from "../backend/common/constants";
-import { BOT_START_MESSAGE, TOKEN } from "./common/constants";
+import { BOT_HELP_MESSAGE, BOT_START_MESSAGE, TOKEN } from "./common/constants";
 import { initI18n } from "../i18n";
 import { TRoomType, TSessionData, TUserSession } from "./common/types";
 import { messageCommand } from "./commands/message";
 import { callbackCommand } from "./commands/callback";
 import { contactCommand } from "./commands/contact";
 import { startCommand } from "./commands/start";
+import { helpCommand } from "./commands/help";
 
 const bot: TelegramBot = new TelegramBot(TOKEN, { polling: true });
 const userSessions: TUserSession = {};
@@ -37,6 +38,9 @@ bot.on("text", (msg) => {
     startCommand(commonParams).handler(msg);
   } else {
     messageCommand(commonParams).handler(msg);
+  }
+  if (msg.text?.match(BOT_HELP_MESSAGE)) {
+    helpCommand(commonParams).handler(msg);
   }
   // clear the session so user can start a new booking
   if (
