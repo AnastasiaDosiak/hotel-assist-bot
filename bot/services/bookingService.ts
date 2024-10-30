@@ -17,6 +17,9 @@ import {
 import { BookedBy } from "../../backend/models/BookedBy";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import isBetween from "dayjs/plugin/isBetween";
+
+dayjs.extend(isBetween);
 dayjs.extend(customParseFormat);
 
 export const bookRoom = async (roomId: string, userData: TUserBookingData) => {
@@ -203,7 +206,7 @@ export const checkProvidedUserDataInRoom = async (
       (booking: BookedBy) => {
         if (booking.phone === phone && booking.startDate === startDate) {
           // check if the checkout date is not in the past
-          if (isDateValidAndAfterNow(booking.endDate)) {
+          if (isDateValidAndAfterNow(booking.endDate as string)) {
             return booking;
           }
         }
@@ -224,7 +227,8 @@ export const gatherBookingData = (chatId: number, session: TSessionData) => {
     firstName: session.firstName,
     lastName: session.lastName,
     startDate: session.checkInDate,
-    endDate: session.checkOutDate,
+    endDate: session.checkOutDate || null,
+    startTime: session.restaurantBookedTime || null,
   };
 };
 
@@ -438,6 +442,60 @@ export const bookLaundryOption = async (
   }
 };
 
+export const bookRestaurantTable = async (
+  serviceName: string,
+  restaurantOption: string,
+  bookedBy: TUserBookingData,
+) => {
+  const serviceToUpdate = await ExtraService.findOne({
+    where: { serviceName },
+  });
+
+  if (!serviceToUpdate) {
+    throw new Error(
+      i18next.t("extraServices.serviceNotFound", { serviceName }),
+    );
+  }
+
+  // Extract the current programs and options
+  const programToUpdate = findProgramWithOption(
+    serviceToUpdate,
+    restaurantOption,
+  );
+
+  if (!programToUpdate) {
+    return i18next.t("extraServices.programNotFound", { restaurantOption });
+  }
+
+  const optionToUpdate = programToUpdate.options.find(
+    (option: Option) => option.name === restaurantOption,
+  );
+
+  optionToUpdate.bookedBy.push(bookedBy);
+
+  const updatedProgram = {
+    ...programToUpdate,
+    options: programToUpdate.options.map((option: Option) =>
+      option.name === restaurantOption ? optionToUpdate : option,
+    ), // Ensure options are updated in the same order
+  };
+
+  // Set the new programs array in the serviceToUpdate object
+  serviceToUpdate.setDataValue("programs", [updatedProgram]);
+
+  // Mark the programs field as changed to ensure Sequelize updates it
+  serviceToUpdate.changed("programs", true);
+
+  // Save the updated service with the modified programs array
+  await serviceToUpdate.save();
+
+  return i18next.t("extraServices.restaurantBooked", {
+    restaurant: restaurantOption,
+    date: bookedBy.startDate,
+    time: bookedBy.startTime,
+  });
+};
+
 export const bookExtraCleaningOption = async (
   serviceName: string,
   laundryOption: string,
@@ -616,4 +674,95 @@ const updateServiceProgram = (
   };
   service.setDataValue("programs", [updatedProgram]);
   service.changed("programs", true);
+};
+
+export const checkRestaurantAvailability = async (
+  serviceName: string,
+  optionName: string,
+  bookedDate: string,
+  bookedStartTime: string, // format 14:00 f.e.
+): Promise<Option | string | null> => {
+  const bookedTime = dayjs(
+    `${bookedDate} ${bookedStartTime}`,
+    `${DATE_FORMAT} HH:mm`,
+  );
+  const bookedEndTime = bookedTime.add(2, "hour"); // Default booking is 2 hours
+
+  const service = await ExtraService.findOne({ where: { serviceName } });
+
+  if (!service) {
+    return i18next.t("extraServices.serviceNotFound", { serviceName });
+  }
+
+  const programs = service.getDataValue("programs");
+  const option =
+    programs
+      .flatMap((program: Program) => program.options)
+      .find((option: Option) => option.name === optionName) || null;
+
+  if (!option) {
+    return i18next.t("extraServices.optionNotFound", { optionName });
+  }
+
+  const startWorkingTime = dayjs(
+    `${bookedDate} ${option.startWorkingTime}`,
+    `${DATE_FORMAT} HH:mm`,
+  );
+  const endWorkingTime = dayjs(
+    `${bookedDate} ${option.endWorkingTime}`,
+    `${DATE_FORMAT} HH:mm`,
+  );
+
+  // Check if booking is outside working hours
+  if (
+    bookedTime.isBefore(startWorkingTime) ||
+    bookedEndTime.isAfter(endWorkingTime)
+  ) {
+    if (bookedEndTime.isAfter(endWorkingTime)) {
+      return i18next.t("extraServices.overlapWithNotWorkingHours");
+    }
+    return i18next.t("extraServices.tooLate");
+  }
+
+  // Check if booking is near the closing time
+  if (
+    bookedTime.isAfter(endWorkingTime.subtract(2, "hour")) &&
+    bookedTime.isBefore(endWorkingTime)
+  ) {
+    return i18next.t("extraServices.partialAvailability", {
+      bookedStartTime,
+      closingTime: option.endWorkingTime,
+    });
+  }
+
+  // Conflict check: Ensure there's no conflict with existing bookings
+  let overlappingBookings = 0; // Track overlapping bookings
+
+  option.bookedBy.every((booking: BookedBy) => {
+    const bookingStartTime = dayjs(
+      `${booking.startDate} ${booking.startTime}`,
+      `${DATE_FORMAT} HH:mm`,
+    );
+    const bookingEndTime = bookingStartTime.add(2, "hour");
+
+    const isConflict =
+      bookedTime.isBetween(bookingStartTime, bookingEndTime, null, "[)") ||
+      bookedEndTime.isBetween(bookingStartTime, bookingEndTime, null, "[)") ||
+      bookingStartTime.isBetween(bookedTime, bookedEndTime, null, "[)");
+
+    // If conflict, increment overlapping bookings
+    if (isConflict) {
+      overlappingBookings += 1;
+    }
+
+    return overlappingBookings < option.availableTables;
+  });
+
+  // Check if there are enough tables available
+  if (overlappingBookings >= option.availableTables) {
+    return i18next.t("extraServices.noAvailableTables", { bookedStartTime });
+  }
+
+  // If everything is fine, return the option
+  return option;
 };

@@ -3,9 +3,9 @@ import { sendOrUpdateRoomTypeDetails } from "../../services/roomService";
 import { CommonStepParams } from "../../common/types";
 import {
   handleExtraServices,
-  handleFeedbacks,
   handleFrequentlyAskedQuestions,
 } from "../serviceHandlers";
+import { handleFeedbacks } from "../feedbackHandler";
 
 export const setupStep = (props: CommonStepParams) => {
   const { msg, bot, rooms, session, setCurrentRoomIndex } = props;

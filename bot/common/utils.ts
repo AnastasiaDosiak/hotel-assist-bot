@@ -63,6 +63,7 @@ export const resetSession = (session: TSessionData) => {
   session.rating = "";
   session.ratingStage = "";
   session.fullName = "";
+  session.restaurantBookedTime = "";
 };
 
 export const getProgramOptions = async (programName: string) => {
@@ -175,6 +176,9 @@ export const isSpaService = (serviceName: string) =>
 
 export const isLaundryService = (serviceName: string) =>
   serviceName === i18next.t("extraServices.laundry");
+
+export const isRestaurantBooking = (serviceName: string) =>
+  serviceName === i18next.t("extraServices.restaurants");
 
 export const isExtraCleaningService = (serviceName: string) =>
   serviceName === i18next.t("extraServices.extraCleaning");

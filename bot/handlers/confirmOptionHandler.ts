@@ -3,6 +3,7 @@ import { CommonStepParams } from "../common/types";
 import {
   isExtraCleaningService,
   isLaundryService,
+  isRestaurantBooking,
   isSpaService,
 } from "../common/utils";
 import { gatherBookingData } from "../services/bookingService";
@@ -10,6 +11,7 @@ import { bookProgramOptionStep } from "./extraServices/bookProgramOptionStep";
 import { bookSpaProgramOptionStep } from "./extraServices/bookSpaProgramOptionStep";
 import { bookLaundryStep } from "./extraServices/bookLaundryStep";
 import { bookExtraCleaningStep } from "./extraServices/bookExtraCleaningStep";
+import { bookRestaurantTableStep } from "./extraServices/bookRestaurantTableStep";
 
 export const confirmOptionStep = async (props: CommonStepParams) => {
   const { msg, bot, session } = props;
@@ -26,6 +28,8 @@ export const confirmOptionStep = async (props: CommonStepParams) => {
       bookLaundryStep(bot, chatId, session);
     } else if (isExtraCleaningService(serviceName)) {
       bookExtraCleaningStep(bot, chatId, session);
+    } else if (isRestaurantBooking(serviceName)) {
+      bookRestaurantTableStep(bot, chatId, session);
     } else {
       bookProgramOptionStep(bot, chatId, session, bookingData);
     }

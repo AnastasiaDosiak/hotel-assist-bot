@@ -48,30 +48,6 @@ export const handleFrequentlyAskedQuestions = async (
   });
 };
 
-export const handleFeedbacks = async (bot: TelegramBot, chatId: number) => {
-  const options = [
-    [
-      {
-        text: i18next.t("feedbackSection.leaveFeedback"),
-        callback_data: `leave_feedback`,
-      },
-    ],
-    [
-      {
-        text: i18next.t("feedbackSection.seeLatestFeedbacks"),
-        callback_data: `see_latest_feedbacks`,
-      },
-    ],
-  ];
-
-  await bot.sendMessage(chatId, i18next.t("feedbackSection.selectAction"), {
-    reply_markup: {
-      resize_keyboard: true,
-      inline_keyboard: options,
-    },
-  });
-};
-
 export const handleServiceCategory = async (
   bot: TelegramBot,
   chatId: number,

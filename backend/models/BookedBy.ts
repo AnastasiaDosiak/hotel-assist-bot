@@ -6,5 +6,6 @@ export class BookedBy extends Model {
   public firstName!: string;
   public lastName!: string;
   public startDate!: string;
-  public endDate!: string;
+  public startTime?: string;
+  public endDate?: string;
 }

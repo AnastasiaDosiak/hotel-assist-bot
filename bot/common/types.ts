@@ -26,6 +26,7 @@ export type TSessionData = {
   rating?: string;
   ratingStage?: string;
   fullName?: string;
+  restaurantBookedTime?: string;
 };
 
 export type TUserSession = {
@@ -38,7 +39,8 @@ export type TUserBookingData = {
   firstName: string;
   lastName: string;
   startDate: string;
-  endDate: string;
+  endDate?: string | null;
+  startTime?: string | null;
 };
 
 export type CallbackHandler = (props: {

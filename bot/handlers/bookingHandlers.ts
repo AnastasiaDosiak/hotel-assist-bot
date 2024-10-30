@@ -7,6 +7,7 @@ import {
   formatDate,
   isExtraCleaningService,
   isLaundryService,
+  isRestaurantBooking,
   isSpaService,
 } from "../common/utils";
 
@@ -47,15 +48,21 @@ export const handleBookOption: CallbackHandler = async ({
     const cleaningServices =
       isLaundryService(serviceName) || isExtraCleaningService(serviceName);
 
-    userSessions[chatId] = {
-      ...userSessions[chatId],
-      serviceBookingStage: cleaningServices
-        ? "awaiting_booked_room_number"
-        : "awaiting_checkin_date",
-      roomIndex: currentRoomIndex,
-    } as TSessionData;
+    if (isRestaurantBooking(serviceName)) {
+      userSessions[chatId] = {
+        ...userSessions[chatId],
+        serviceBookingStage: "awaiting_restaurant_date",
+      } as TSessionData;
+    } else {
+      userSessions[chatId] = {
+        ...userSessions[chatId],
+        serviceBookingStage: cleaningServices
+          ? "awaiting_booked_room_number"
+          : "awaiting_checkin_date",
+        roomIndex: currentRoomIndex,
+      } as TSessionData;
+    }
 
-    // Disable the buttons after room selection
     await bot.editMessageReplyMarkup(
       { inline_keyboard: [] },
       { chat_id: chatId, message_id: message.message_id },
@@ -64,6 +71,11 @@ export const handleBookOption: CallbackHandler = async ({
       await bot.sendMessage(
         chatId,
         i18next.t("extraServices.enterRoomDetails"),
+      );
+    } else if (isRestaurantBooking(serviceName)) {
+      await bot.sendMessage(
+        chatId,
+        i18next.t("extraServices.restaurantBookDate"),
       );
     } else {
       await bot.sendMessage(chatId, i18next.t("enterCheckInDate"));

@@ -292,6 +292,8 @@ export const generateExtraServices = async () => {
         {
           options: [
             {
+              startWorkingTime: "10:00",
+              endWorkingTime: "22:00",
               name: i18next.t("extraServices.restaurantPanorama"),
               description: i18next.t(
                 "extraServices.restaurantPanoramaDescription",
@@ -302,6 +304,8 @@ export const generateExtraServices = async () => {
               bookedBy: [],
             },
             {
+              startWorkingTime: "10:00",
+              endWorkingTime: "22:00",
               name: i18next.t("extraServices.restaurantDeVine"),
               description: i18next.t(
                 "extraServices.restaurantDeVineDescription",
@@ -312,6 +316,8 @@ export const generateExtraServices = async () => {
               bookedBy: [],
             },
             {
+              startWorkingTime: "10:00",
+              endWorkingTime: "22:00",
               name: i18next.t("extraServices.restaurantEdem"),
               description: i18next.t("extraServices.restaurantEdemDescription"),
               imageUrl:
