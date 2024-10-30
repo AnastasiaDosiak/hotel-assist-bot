@@ -37,7 +37,7 @@ export const bookProgramOptionStep = async (
       await bot.sendMessage(
         chatId,
         i18next.t("extraServices.bookingOptionConfirmation", {
-          option,
+          optionName: option,
           checkIn: checkInDate,
           checkOut: checkOutDate,
           totalPrice: res?.price,
