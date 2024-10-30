@@ -12,6 +12,13 @@ import { handleSelectService } from "./serviceHandlers";
 import { handleSelectOption, handleSelectSpaOption } from "./optionHandler";
 import { backToServices } from "./backToServicesHandler";
 import { backToQuestions, handleSelectQuestion } from "./faqSectionHandlers";
+import {
+  handleEnterFirstAndLastName,
+  handleLeaveFeedback,
+  handleRatedHotel,
+  handleRateHotel,
+  handleSeeLatestFeedbacks,
+} from "./feedbackHandler";
 
 // Mapping handlers based on specific prefixes
 const callbackHandlers: CallbackHandlersMap = {
@@ -28,6 +35,11 @@ const callbackHandlers: CallbackHandlersMap = {
   select_option_: handleSelectOption,
   book_option_: handleBookOption,
   select_question: handleSelectQuestion,
+  leave_feedback: handleLeaveFeedback,
+  see_latest_feedbacks: handleSeeLatestFeedbacks,
+  skip_first_and_last_name: handleRateHotel,
+  enter_first_and_last_name: handleEnterFirstAndLastName,
+  rated_: handleRatedHotel,
 };
 
 export default callbackHandlers;

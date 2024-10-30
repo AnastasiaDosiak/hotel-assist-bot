@@ -18,6 +18,7 @@
   "shareContact": "Share your contact to continue reservation.",
   "enterCheckInDate": "Write a check-in date. The format should be DD/MM/YYYY",
   "enterCheckoutDate": "Please, write a checkout date. The format should be DD/MM/YYYY",
+  "invalidFullName": "Please enter a valid full name. Only alphabetic characters, spaces, hyphens, and apostrophes are allowed.",
   "bookingProcess": {
     "bookButton": "Book this one",
     "roomDetails": "Room Type: {{type}}. Price: {{price}} UAH. Guests: {{guests}}",
@@ -166,10 +167,19 @@
     "selectedQuestion": "You have selected '{{title}}' question."
   },
   "feedbackSection": {
+    "selectedActionLatestFeedbacks": "You have selected action to see latest 5 feedbacks.",
     "selectAction": "Please, choose action you would like to do:",
     "leaveFeedback": "Leave feedback",
-    "rate": "Rate us",
-    "seeAllFeedbacks": "See all feedbacks"
+    "seeLatestFeedbacks": "See latest 5 feedbacks",
+    "seeLatestFeedback": "Some error happened durind See latest feedbacks.",
+    "enterFirstAndLastName": "Please, choose if you would like to enter your first and last or you wish to be anonymous.",
+    "skip": "Skip entering",
+    "enter": "Enter",
+    "leaveComment": "Please, write your comments and impressions about Edem Resort & SPA.",
+    "rateHotel": "Please rate our hotel. 5 stars is the highest rating, and 1 star is the lowest.",
+    "errorDurinFeedbackSaving": "Some error occured during saving of this feedback. Please try again",
+    "feebackSaved": "Thanks! Your feedback successfully saved! You can view all feedbacks on our site or view the last 5 in out bot.",
+    "enterFirstAndLastNameChosen": "You have chosen to enter your first and last name. Please, write your full name. Example is: Dillian Doe"
   },
   "extraCleaningSection": {
     "maxRoomsReached": "Sorry, we can't provide you this service today as the number that ordered extra cleaning are reached.",

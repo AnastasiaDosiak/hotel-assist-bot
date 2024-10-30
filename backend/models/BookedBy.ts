@@ -7,6 +7,4 @@ export class BookedBy extends Model {
   public lastName!: string;
   public startDate!: string;
   public endDate!: string;
-  public startBookingTime?: string;
-  public endBookingTime?: string;
 }

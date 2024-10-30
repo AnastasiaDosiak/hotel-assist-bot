@@ -22,9 +22,10 @@ export type TSessionData = {
   option: string;
   optionDuration: number;
   serviceBookingStage: string;
-  startBookingTime?: string;
-  endBookingTime?: string;
   roomNumber?: number;
+  rating?: string;
+  ratingStage?: string;
+  fullName?: string;
 };
 
 export type TUserSession = {

@@ -58,14 +58,8 @@ export const handleFeedbacks = async (bot: TelegramBot, chatId: number) => {
     ],
     [
       {
-        text: i18next.t("feedbackSection.rate"),
-        callback_data: `rate_hotel`,
-      },
-    ],
-    [
-      {
-        text: i18next.t("feedbackSection.seeAllFeedbacks"),
-        callback_data: `see_all_feedbacks`,
+        text: i18next.t("feedbackSection.seeLatestFeedbacks"),
+        callback_data: `see_latest_feedbacks`,
       },
     ],
   ];

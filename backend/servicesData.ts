@@ -110,8 +110,7 @@ export const generateFeedbacks = async (feedbacks: number) => {
     await Feedback.create({
       id: faker.string.uuid(),
       estimation: faker.number.int({ min: 1, max: 5 }),
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
+      fullName: faker.person.fullName(),
       comment: faker.lorem.sentence(),
     });
   }

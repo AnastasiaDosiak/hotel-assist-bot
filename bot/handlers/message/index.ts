@@ -11,6 +11,8 @@ import { confirmOptionStep } from "../confirmOptionHandler";
 import { servicesBookedRoomContactStep } from "./servicesBookedRoomContactStep";
 import { servicesBookedRoomNumberStep } from "./servicesBookedRoomNumberStep";
 import { servicesBookedCheckInStep } from "./servicesBookedCheckInDate";
+import { enterFirstAndLastNameStep } from "./enterFirstAndLastNameStep";
+import { leaveCommentStep } from "./leaveCommentStep";
 
 export const handleTextMessage = (
   bot: TelegramBot,
@@ -63,6 +65,13 @@ export const handleTextMessage = (
         lastNameStep(commonStepParams, "serviceBookingStage");
       } else if (session.serviceBookingStage === "confirm_step") {
         confirmOptionStep(commonStepParams);
+      }
+    }
+    if (session.ratingStage) {
+      if (session.ratingStage === "awaiting_last_and_first_name") {
+        enterFirstAndLastNameStep(commonStepParams);
+      } else if (session.ratingStage === "awaiting_leave_comment") {
+        leaveCommentStep(commonStepParams);
       }
     }
   }

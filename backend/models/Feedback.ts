@@ -4,8 +4,7 @@ import { sequelize } from "../db";
 export class Feedback extends Model {
   public id!: string;
   public estimation!: number;
-  public firstName?: string;
-  public lastName?: string;
+  public fullName?: string;
   public comment!: string;
 }
 
@@ -20,11 +19,7 @@ Feedback.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    firstName: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    lastName: {
+    fullName: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -36,5 +31,6 @@ Feedback.init(
   {
     sequelize,
     tableName: "feedbacks",
+    timestamps: true,
   },
 );

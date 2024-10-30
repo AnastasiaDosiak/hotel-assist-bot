@@ -60,6 +60,9 @@ export const resetSession = (session: TSessionData) => {
   session.programName = "";
   session.serviceName = "";
   session.serviceBookingStage = "";
+  session.rating = "";
+  session.ratingStage = "";
+  session.fullName = "";
 };
 
 export const getProgramOptions = async (programName: string) => {
@@ -175,3 +178,11 @@ export const isLaundryService = (serviceName: string) =>
 
 export const isExtraCleaningService = (serviceName: string) =>
   serviceName === i18next.t("extraServices.extraCleaning");
+
+export const convertEstimationToStars = (estimation: number): string => {
+  const maxStars = 5;
+  const fullStars = "★".repeat(estimation); // Full stars
+  const emptyStars = "☆".repeat(maxStars - estimation); // Empty stars
+
+  return fullStars + emptyStars; // Combine full and empty stars
+};
