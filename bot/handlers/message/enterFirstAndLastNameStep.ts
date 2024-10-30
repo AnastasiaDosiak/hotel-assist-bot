@@ -15,13 +15,11 @@ export const enterFirstAndLastNameStep = (props: CommonStepParams) => {
       reply_markup: {
         resize_keyboard: true,
         inline_keyboard: [
-          [
-            { text: "⭐", callback_data: "rated_1" },
-            { text: "⭐⭐", callback_data: "rated_2" },
-            { text: "⭐⭐⭐", callback_data: "rated_3" },
-            { text: "⭐⭐⭐⭐", callback_data: "rated_4" },
-            { text: "⭐⭐⭐⭐⭐", callback_data: "rated_5" },
-          ],
+          [{ text: "⭐", callback_data: "rated_1" }],
+          [{ text: "⭐⭐", callback_data: "rated_2" }],
+          [{ text: "⭐⭐⭐", callback_data: "rated_3" }],
+          [{ text: "⭐⭐⭐⭐", callback_data: "rated_4" }],
+          [{ text: "⭐⭐⭐⭐⭐", callback_data: "rated_5" }],
         ],
       },
     });
